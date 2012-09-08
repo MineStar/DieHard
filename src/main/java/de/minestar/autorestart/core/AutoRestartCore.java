@@ -1,4 +1,4 @@
-package de.minestar.autorestart;
+package de.minestar.autorestart.core;
 
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -21,5 +21,4 @@ public class AutoRestartCore extends AbstractCore {
 		scheduler.scheduleAsyncRepeatingTask(this, this.checkThread, 20 * 60, 20 * 60);
 		return super.startThreads(scheduler);
 	}
-	
 }
