@@ -1,4 +1,4 @@
 name: AutoRestart
-main: de.minestar.autorestart.AutoRestartCore
+main: de.minestar.autorestart.core.AutoRestartCore
 version: ${pom.version}
 depend: [MineStarLibrary]

@@ -1,5 +1,7 @@
 package de.minestar.autorestart.core;
 
+import java.io.File;
+
 import org.bukkit.scheduler.BukkitScheduler;
 
 import de.minestar.autorestart.threads.CheckThread;
@@ -12,13 +14,19 @@ public class AutoRestartCore extends AbstractCore {
 
 	@Override
 	protected boolean createThreads() {
-		this.checkThread = new CheckThread();
+		this.checkThread = new CheckThread(Settings.getRestartTimes(), Settings.getWarningTimes());
 		return super.createThreads();
 	}
 
 	@Override
 	protected boolean startThreads(BukkitScheduler scheduler) {
+		// CheckThread mit 1 Minute Verzögerung starten und jede Minute wiederholden
 		scheduler.scheduleAsyncRepeatingTask(this, this.checkThread, 20 * 60, 20 * 60);
 		return super.startThreads(scheduler);
 	}
+	
+	@Override
+	protected boolean loadingConfigs(File dataFolder) {
+        return Settings.init(dataFolder, NAME, getDescription().getVersion());
+    }
 }

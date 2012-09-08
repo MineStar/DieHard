@@ -4,7 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 
-import de.minestar.autorestart.AutoRestartCore;
+import de.minestar.autorestart.core.AutoRestartCore;
 
 public class StopThread implements Runnable {
 
