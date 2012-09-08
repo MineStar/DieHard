@@ -12,10 +12,12 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 public class CheckThread implements Runnable{
 	private Calendar nextRestartTime;
+	private List<Calendar> warningTimes;
 	
 	public CheckThread(List<Calendar> restartTimes, List<Calendar> warningTimes) {		
-		nextRestartTime = getNextRestartTime(restartTimes);
+		this.nextRestartTime = getNextRestartTime(restartTimes);
 		System.out.println("Initialisiere CheckThread mit " + printCalendarTime(nextRestartTime));
+		this.warningTimes = warningTimes; 
 	}
 	
 	public static String printCalendarTime(Calendar cal) {
@@ -24,12 +26,12 @@ public class CheckThread implements Runnable{
 	}
 	
 	private Calendar getNextRestartTime(List<Calendar> restartTimes) {
-		// Aktuelle Zeit lesen, aber nur Stunden und Minuten übrig lassen für den Vergleich
+		// read current time but remove everything but hours and minutes for compare
 		Calendar now = new GregorianCalendar();
 		now.set(0, 0, 0);
 		
 		Calendar possibleRestartTime = null;
-		// Zeiten nach der aktuellen Zeit raussuchen und von denen die niedrigste Zeit auswählen.
+		// search times after current time and choose lowest
 		for (Calendar cal : restartTimes) {
 			if (possibleRestartTime == null) {
 				if (cal.after(now)) {
@@ -44,8 +46,8 @@ public class CheckThread implements Runnable{
 				}				
 			}
 		}
-		// wenn possibleRestartTime jetzt noch null ist, liegt der nächste Restart nach Mitternacht
-		// d.h. wir suchen jetzt nach der niedrigsten Zeit
+		// if possibleRestartTime is still null the next restart is after midnight
+		// that means we choose lowest time
 		if (possibleRestartTime == null) {
 			for (Calendar cal : restartTimes) {
 				if (possibleRestartTime == null) {
@@ -58,15 +60,15 @@ public class CheckThread implements Runnable{
 				}
 			}
 		}
-		// nächste Neustartzeit gefunden, jetzt wieder das komplette Datum hinzufügen.
+		// next restart time found now add date info again
 		now = new GregorianCalendar();
 		possibleRestartTime.set(Calendar.YEAR, now.get(Calendar.YEAR));
 		possibleRestartTime.set(Calendar.MONTH, now.get(Calendar.MONTH));
 		possibleRestartTime.set(Calendar.DAY_OF_MONTH, now.get(Calendar.DAY_OF_MONTH));
 		possibleRestartTime.set(Calendar.SECOND, now.get(Calendar.SECOND));
 		System.out.println("Nächste Restart Zeit: " + printCalendarTime(possibleRestartTime));
-		// wenn possibleRestartTime jetzt kleiner als now ist, muss ein Tag darauf gerechnet werden.
-		// Sicherheitshalber über Millisekunden, da auch Monats- und/oder Jahreswechsel anstehen können
+		// if possibleRestartTime is now before 'now' add a day to the object
+		// to be sure use milliseconds to take care of month or year change
 		if (possibleRestartTime.before(now)) {
 			long millis = possibleRestartTime.getTimeInMillis();
 			millis += 1000 * 60 * 60 * 24;
@@ -85,7 +87,9 @@ public class CheckThread implements Runnable{
 		System.out.println("Check Time");
 		System.out.println("now = " + printCalendarTime(now));
 		System.out.println("shutdown = " + printCalendarTime(nextRestartTime));
+		System.out.println("naechste Warnzeit = " + printCalendarTime(warningTimes.get(0)));
 		long diff = nextRestartTime.getTimeInMillis() - now.getTimeInMillis();
+		System.out.println("diff in ms: " + diff);
 		diff /= 60000;
 		if (diff == 3) {
 			System.out.println("noch 3");

@@ -20,7 +20,7 @@ public class AutoRestartCore extends AbstractCore {
 
 	@Override
 	protected boolean startThreads(BukkitScheduler scheduler) {
-		// CheckThread mit 1 Minute Verzögerung starten und jede Minute wiederholden
+		// start CheckThread with 1 minute delay and repeat every minute
 		scheduler.scheduleAsyncRepeatingTask(this, this.checkThread, 20 * 60, 20 * 60);
 		return super.startThreads(scheduler);
 	}

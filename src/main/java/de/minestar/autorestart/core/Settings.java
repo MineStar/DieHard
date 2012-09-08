@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import de.minestar.autorestart.threads.CheckThread;
 import de.minestar.minestarlibrary.config.MinestarConfig;
 import de.minestar.minestarlibrary.utils.ConsoleUtils;
 
@@ -46,21 +47,21 @@ public class Settings {
 	}
 
 	private static void loadValues() {
-		/* Restart Zeiten */
+		/* Restart times */
 		loadRestartTimes();
 	}
 	
 	private static Calendar convertTimeTextToCalendar(String timeText) {
 		int hours = -1, minutes = -1;
 		Calendar cal = new GregorianCalendar(0, 0, 0, 0, 0);
-		String[] zeitfragmente = timeText.split(":");
-		if (zeitfragmente.length == 2) {
+		String[] splitTimeText = timeText.split(":");
+		if (splitTimeText.length == 2) {
 			
 			try {
-				hours = Integer.parseInt(zeitfragmente[0]);
-				minutes = Integer.parseInt(zeitfragmente[1]);
+				hours = Integer.parseInt(splitTimeText[0]);
+				minutes = Integer.parseInt(splitTimeText[1]);
 			} catch (NumberFormatException e) {
-				// Zeitwert enthielt ungültige Zeichen 
+				// timeText contains illegal characters 
 			}
 		}
 		
@@ -78,18 +79,22 @@ public class Settings {
 		List<String> listWarningTimeText = config.getStringList("Warning Times");
 		
 		restartTimes = new ArrayList<Calendar>();
-		for (String zeit : listRestartTimeText) {
-			Calendar cal = convertTimeTextToCalendar(zeit);
+		for (String time : listRestartTimeText) {
+			Calendar cal = convertTimeTextToCalendar(time);
 			restartTimes.add(cal);
 		}
 		Collections.sort(restartTimes);
 		
 		warningTimes = new ArrayList<Calendar>();
-		for (String zeit : listWarningTimeText) {
-			Calendar cal = convertTimeTextToCalendar(zeit);
+		for (String time : listWarningTimeText) {
+			Calendar cal = convertTimeTextToCalendar(time);
 			warningTimes.add(cal);
 		}
 		Collections.sort(restartTimes);
+		System.out.println("Sortierte Warnzeiten");
+		for (Calendar cal : warningTimes) {
+			System.out.println(CheckThread.printCalendarTime(cal));
+		}
 	}
 
 	public static List<Calendar> getRestartTimes() {
