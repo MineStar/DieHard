@@ -87,27 +87,27 @@ public class CheckThread implements Runnable{
 		System.out.println("Check Time");
 		System.out.println("now = " + printCalendarTime(now));
 		System.out.println("shutdown = " + printCalendarTime(nextRestartTime));
-		System.out.println("naechste Warnzeit = " + printCalendarTime(warningTimes.get(0)));
 		long diff = nextRestartTime.getTimeInMillis() - now.getTimeInMillis();
-		System.out.println("diff in ms: " + diff);
-		diff /= 60000;
-		if (diff == 3) {
-			System.out.println("noch 3");
-			MessageThread msg = new MessageThread(3);
-			BukkitScheduler sched = Bukkit.getScheduler();
-			sched.scheduleSyncDelayedTask(p, msg, 1);
-		} else if (diff == 2) {
-			System.out.println("noch 2");
-			MessageThread msg = new MessageThread(2);
-			BukkitScheduler sched = Bukkit.getScheduler();
-			sched.scheduleSyncDelayedTask(p, msg, 1);
-		} else if (diff == 1) {
-			System.out.println("noch 1");
-			MessageThread msg = new MessageThread(1);
-			BukkitScheduler sched = Bukkit.getScheduler();
-			sched.scheduleSyncDelayedTask(p, msg, 1);
-		} else if (diff == 0) {
-			System.out.println("boom");
+		diff /= 1000 * 60;
+		System.out.println("diff in minutes: " + diff);
+		int minutesLeft;
+		if (!warningTimes.isEmpty()) {
+			System.out.println("naechste Warnzeit = " + printCalendarTime(warningTimes.get(0)));
+			minutesLeft = warningTimes.get(0).get(Calendar.MINUTE);
+		} else {
+			minutesLeft = 0;
+		}
+		if (diff > 0) {
+			if (diff == minutesLeft) {
+				System.out.println("noch " + minutesLeft + " Minuten");
+				MessageThread msg = new MessageThread(minutesLeft);
+				BukkitScheduler sched = Bukkit.getScheduler();
+				sched.scheduleSyncDelayedTask(p, msg, 1);
+				warningTimes.remove(0);
+			}
+		}
+		else {
+			System.out.println("restart now");
 			StopThread stp = new StopThread();
 			BukkitScheduler sched = Bukkit.getScheduler();
 			sched.scheduleSyncDelayedTask(p, stp, 1);
