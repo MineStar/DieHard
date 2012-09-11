@@ -13,95 +13,95 @@ import de.minestar.minestarlibrary.utils.ConsoleUtils;
 
 public class Settings {
 
-	/* VALUES */
+    /* VALUES */
 
-	private static List<Calendar> restartTimes;
-	private static List<Calendar> warningTimes;
+    private static List<Calendar> restartTimes;
+    private static List<Calendar> warningTimes;
 
-	/* USED FOR SETTING */
+    /* USED FOR SETTING */
 
-	private static MinestarConfig config;
-	private static File configFile;
+    private static MinestarConfig config;
+    private static File configFile;
 
-	private Settings() {
+    private Settings() {
 
-	}
+    }
 
-	public static boolean init(File dataFolder, String pluginName, String pluginVersion) {
-		configFile = new File(dataFolder, "config.yml");
-		try {
-			// LOAD EXISTING CONFIG FILE
-			if (configFile.exists()) {
-				config = new MinestarConfig(configFile, pluginName, pluginVersion);
-			// CREATE A DEFAUL ONE
-			} else {
-				config = MinestarConfig.copyDefault(Settings.class.getResourceAsStream("/config.yml"), configFile);
-			}
-			loadValues();
-			return true;
+    public static boolean init(File dataFolder, String pluginName, String pluginVersion) {
+        configFile = new File(dataFolder, "config.yml");
+        try {
+            // LOAD EXISTING CONFIG FILE
+            if (configFile.exists()) {
+                config = new MinestarConfig(configFile, pluginName, pluginVersion);
+                // CREATE A DEFAUL ONE
+            } else {
+                config = MinestarConfig.copyDefault(Settings.class.getResourceAsStream("/config.yml"), configFile);
+            }
+            loadValues();
+            return true;
 
-		} catch (Exception e) {
-			ConsoleUtils.printException(e, pluginName, "Can't load the settings from " + configFile);
-			return false;
-		}
-	}
+        } catch (Exception e) {
+            ConsoleUtils.printException(e, pluginName, "Can't load the settings from " + configFile);
+            return false;
+        }
+    }
 
-	private static void loadValues() {
-		/* Restart times */
-		loadRestartTimes();
-	}
-	
-	private static Calendar convertTimeTextToCalendar(String timeText) {
-		int hours = -1, minutes = -1;
-		Calendar cal = new GregorianCalendar(0, 0, 0, 0, 0);
-		String[] splitTimeText = timeText.split(":");
-		if (splitTimeText.length == 2) {
-			
-			try {
-				hours = Integer.parseInt(splitTimeText[0]);
-				minutes = Integer.parseInt(splitTimeText[1]);
-			} catch (NumberFormatException e) {
-				// timeText contains illegal characters 
-			}
-		}
-		
-		if ((hours >= 0) && (hours <= 23)) {
-			if ((minutes >= 0) && (minutes <= 59)) {
-				cal.set(Calendar.HOUR_OF_DAY, hours);
-				cal.set(Calendar.MINUTE, minutes);
-			}
-		}
-		return cal;
-	}
+    private static void loadValues() {
+        /* Restart times */
+        loadRestartTimes();
+    }
 
-	private static void loadRestartTimes() {
-		List<String> listRestartTimeText = config.getStringList("Restart Times");
-		List<String> listWarningTimeText = config.getStringList("Warning Times");
-		
-		restartTimes = new ArrayList<Calendar>();
-		for (String time : listRestartTimeText) {
-			Calendar cal = convertTimeTextToCalendar(time);
-			restartTimes.add(cal);
-		}
-		Collections.sort(restartTimes);
-		
-		warningTimes = new ArrayList<Calendar>();
-		for (String time : listWarningTimeText) {
-			Calendar cal = convertTimeTextToCalendar(time);
-			warningTimes.add(cal);
-		}
-		Collections.sort(restartTimes);
-		System.out.println("Sortierte Warnzeiten");
-		for (Calendar cal : warningTimes) {
-			System.out.println(CheckThread.printCalendarTime(cal));
-		}
-	}
+    private static Calendar convertTimeTextToCalendar(String timeText) {
+        int hours = -1, minutes = -1;
+        Calendar cal = new GregorianCalendar(0, 0, 0, 0, 0);
+        String[] splitTimeText = timeText.split(":");
+        if (splitTimeText.length == 2) {
 
-	public static List<Calendar> getRestartTimes() {
-		return restartTimes;
-	}
-	
-	public static List<Calendar> getWarningTimes() {
-		return warningTimes;
-	}
+            try {
+                hours = Integer.parseInt(splitTimeText[0]);
+                minutes = Integer.parseInt(splitTimeText[1]);
+            } catch (NumberFormatException e) {
+                // timeText contains illegal characters
+            }
+        }
+
+        if ((hours >= 0) && (hours <= 23)) {
+            if ((minutes >= 0) && (minutes <= 59)) {
+                cal.set(Calendar.HOUR_OF_DAY, hours);
+                cal.set(Calendar.MINUTE, minutes);
+            }
+        }
+        return cal;
+    }
+
+    private static void loadRestartTimes() {
+        List<String> listRestartTimeText = config.getStringList("Restart Times");
+        List<String> listWarningTimeText = config.getStringList("Warning Times");
+
+        restartTimes = new ArrayList<Calendar>();
+        for (String time : listRestartTimeText) {
+            Calendar cal = convertTimeTextToCalendar(time);
+            restartTimes.add(cal);
+        }
+        Collections.sort(restartTimes);
+
+        warningTimes = new ArrayList<Calendar>();
+        for (String time : listWarningTimeText) {
+            Calendar cal = convertTimeTextToCalendar(time);
+            warningTimes.add(cal);
+        }
+        Collections.sort(restartTimes);
+        System.out.println("Sortierte Warnzeiten");
+        for (Calendar cal : warningTimes) {
+            System.out.println(CheckThread.printCalendarTime(cal));
+        }
+    }
+
+    public static List<Calendar> getRestartTimes() {
+        return restartTimes;
+    }
+
+    public static List<Calendar> getWarningTimes() {
+        return warningTimes;
+    }
 }
