@@ -2,6 +2,8 @@ package de.minestar.autorestart.core;
 
 import java.io.File;
 
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import de.minestar.autorestart.threads.CheckThread;
@@ -9,6 +11,7 @@ import de.minestar.minestarlibrary.AbstractCore;
 
 public class AutoRestartCore extends AbstractCore {
     public static final String NAME = "AutoRestart";
+    public static final Plugin PLUGIN = Bukkit.getPluginManager().getPlugin(AutoRestartCore.NAME);
 
     private CheckThread checkThread;
 
