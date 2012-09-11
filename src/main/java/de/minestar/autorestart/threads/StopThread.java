@@ -12,7 +12,8 @@ public class StopThread implements Runnable {
     @Override
     public void run() {
         if (!messageShown) {
-            Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "[" + AutoRestartCore.NAME + "] Der Server wird jetzt neu gestartet!");
+            String message = String.format("[%s] ACHTUNG !!! Der Server wird JETZT neu gestartet!", AutoRestartCore.NAME);
+            Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + message);
             messageShown = true;
         } else {
             Bukkit.savePlayers();
