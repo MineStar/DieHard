@@ -8,8 +8,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
+
+import de.minestar.autorestart.core.AutoRestartCore;
 
 public class CheckThread implements Runnable {
     private Calendar nextRestartTime;
@@ -83,7 +84,6 @@ public class CheckThread implements Runnable {
     @Override
     public void run() {
         Calendar now = new GregorianCalendar();
-        Plugin p = Bukkit.getPluginManager().getPlugin("AutoRestart");
 
         System.out.println("Check Time");
         System.out.println("now = " + printCalendarTime(now));
@@ -103,14 +103,14 @@ public class CheckThread implements Runnable {
                 System.out.println("noch " + minutesLeft + " Minuten");
                 MessageThread msg = new MessageThread(minutesLeft);
                 BukkitScheduler sched = Bukkit.getScheduler();
-                sched.scheduleSyncDelayedTask(p, msg, 1);
+                sched.scheduleSyncDelayedTask(AutoRestartCore.PLUGIN, msg, 1);
                 warningTimes.remove(0);
             }
         } else {
             System.out.println("restart now");
             StopThread stp = new StopThread();
             BukkitScheduler sched = Bukkit.getScheduler();
-            sched.scheduleSyncRepeatingTask(p,  stp,  1, 20 * 10);
+            sched.scheduleSyncRepeatingTask(AutoRestartCore.PLUGIN, stp, 1, AutoRestartCore.secondsToTicks(10));
         }
     }
 }
