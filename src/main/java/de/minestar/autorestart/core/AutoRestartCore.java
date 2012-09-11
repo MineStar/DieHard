@@ -21,12 +21,17 @@ public class AutoRestartCore extends AbstractCore {
     @Override
     protected boolean startThreads(BukkitScheduler scheduler) {
         // start CheckThread with 1 minute delay and repeat every minute
-        scheduler.scheduleAsyncRepeatingTask(this, this.checkThread, 20 * 60, 20 * 60);
+        scheduler.scheduleAsyncRepeatingTask(this, this.checkThread, secondsToTicks(60), secondsToTicks(60));
         return super.startThreads(scheduler);
     }
 
     @Override
     protected boolean loadingConfigs(File dataFolder) {
         return Settings.init(dataFolder, NAME, getDescription().getVersion());
+    }
+
+    public static int secondsToTicks(int seconds) {
+        int ticksPerSecond = 20;
+        return ticksPerSecond * seconds;
     }
 }
