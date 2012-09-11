@@ -49,6 +49,8 @@ public class Settings {
     private static void loadValues() {
         /* Restart times */
         loadRestartTimes();
+        /* Warning times */
+        loadWarningTimes();
     }
 
     private static Calendar convertTimeTextToCalendar(String timeText) {
@@ -76,7 +78,6 @@ public class Settings {
 
     private static void loadRestartTimes() {
         List<String> listRestartTimeText = config.getStringList("Restart Times");
-        List<String> listWarningTimeText = config.getStringList("Warning Times");
 
         restartTimes = new ArrayList<Calendar>();
         for (String time : listRestartTimeText) {
@@ -84,16 +85,24 @@ public class Settings {
             restartTimes.add(cal);
         }
         Collections.sort(restartTimes);
+        ConsoleUtils.printInfo(AutoRestartCore.NAME, "Loaded restart times");
+        for (Calendar cal : restartTimes) {
+            ConsoleUtils.printInfo(AutoRestartCore.NAME, CheckThread.printCalendarTime(cal));
+        }
+    }
+    
+    private static void loadWarningTimes() {
+        List<String> listWarningTimeText = config.getStringList("Warning Times");
 
         warningTimes = new ArrayList<Calendar>();
         for (String time : listWarningTimeText) {
             Calendar cal = convertTimeTextToCalendar(time);
             warningTimes.add(cal);
         }
-        Collections.sort(restartTimes);
-        System.out.println("Sortierte Warnzeiten");
+        Collections.sort(warningTimes, Collections.reverseOrder());
+        ConsoleUtils.printInfo(AutoRestartCore.NAME, "Sortierte Warnzeiten");
         for (Calendar cal : warningTimes) {
-            System.out.println(CheckThread.printCalendarTime(cal));
+            ConsoleUtils.printInfo(AutoRestartCore.NAME, CheckThread.printCalendarTime(cal));
         }
     }
 
