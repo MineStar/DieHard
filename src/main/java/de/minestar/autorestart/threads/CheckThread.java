@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -71,7 +72,7 @@ public class CheckThread implements Runnable {
         // to be sure use milliseconds to take care of month or year change
         if (possibleRestartTime.before(now)) {
             long millis = possibleRestartTime.getTimeInMillis();
-            millis += 1000 * 60 * 60 * 24;
+            millis += TimeUnit.DAYS.toMillis(1);
             possibleRestartTime.setTimeInMillis(millis);
         }
         possibleRestartTime.set(Calendar.SECOND, 0);
@@ -109,7 +110,7 @@ public class CheckThread implements Runnable {
             System.out.println("restart now");
             StopThread stp = new StopThread();
             BukkitScheduler sched = Bukkit.getScheduler();
-            sched.scheduleSyncDelayedTask(p, stp, 1);
+            sched.scheduleSyncRepeatingTask(p,  stp,  1, 20 * 10);
         }
     }
 }
