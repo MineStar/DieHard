@@ -12,7 +12,7 @@ import de.minestar.autorestart.core.DateTimeHelper;
 import de.minestar.autorestart.core.Settings;
 
 public class CheckThread implements Runnable {
-    private Long nextRestartTime;
+    private long nextRestartTime;
     private List<Long> warningTimes;
 
     public CheckThread(List<Long> restartTimes, List<Long> warningTimes) {
@@ -20,14 +20,14 @@ public class CheckThread implements Runnable {
         this.warningTimes = warningTimes;
     }
 
-    private Long getNextRestartTime(List<Long> restartTimes) {
+    private long getNextRestartTime(List<Long> restartTimes) {
         // read current time but remove everything
         // but hours and minutes for compare
-        Long nowOnlyTime = DateTimeHelper.getOnlyTime(new Date());
+        long nowOnlyTime = DateTimeHelper.getOnlyTime(new Date());
 
         long possibleRestartTime = 0;
         // search times after current time and choose lowest
-        for (Long date : restartTimes) {
+        for (long date : restartTimes) {
             if (possibleRestartTime == 0) {
                 if (date > nowOnlyTime) {
                     possibleRestartTime = date;
@@ -68,7 +68,7 @@ public class CheckThread implements Runnable {
     public void run() {
         int lastWarning;
         long nextWarnTime;
-        Long nowOnlyTime = DateTimeHelper.getOnlyTime(new Date());
+        long nowOnlyTime = DateTimeHelper.getOnlyTime(new Date());
 
         long difference = DateTimeHelper.getTimeDifference(nowOnlyTime, nextRestartTime);
         long diff = TimeUnit.MILLISECONDS.toMinutes(difference);

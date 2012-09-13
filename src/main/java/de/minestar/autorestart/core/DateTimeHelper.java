@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class DateTimeHelper {
-    public static Long getOnlyTime(Date date) {
+    public static long getOnlyTime(Date date) {
         DateFormat df = DateFormat.getTimeInstance();
         String textTime = df.format(date);
         return getOnlyTimeLong(textTime);
@@ -23,7 +23,7 @@ public class DateTimeHelper {
         return result;
     }
 
-    public static long getTimeDifference(Long time1, Long time2) {
+    public static long getTimeDifference(long time1, long time2) {
         long result;
 
         if (time2 >= time1) {
