@@ -3,7 +3,6 @@ package de.minestar.autorestart.threads;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -11,14 +10,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import de.minestar.autorestart.core.AutoRestartCore;
+import de.minestar.autorestart.core.DateTimeHelper;
 
 public class CheckThread implements Runnable {
-    private Calendar nextRestartTime;
-    private List<Calendar> warningTimes;
+    private Long nextRestartTime;
+    private List<Long> warningTimes;
 
-    public CheckThread(List<Calendar> restartTimes, List<Calendar> warningTimes) {
+    public CheckThread(List<Long> restartTimes, List<Long> warningTimes) {
         this.nextRestartTime = getNextRestartTime(restartTimes);
-        System.out.println("Initialisiere CheckThread mit " + printCalendarTime(nextRestartTime));
         this.warningTimes = warningTimes;
     }
 
@@ -27,90 +26,63 @@ public class CheckThread implements Runnable {
         return sdf.format(new Date(cal.getTimeInMillis()));
     }
 
-    private Calendar getNextRestartTime(List<Calendar> restartTimes) {
-        // read current time but remove everything but hours and minutes for
-        // compare
-        Calendar now = new GregorianCalendar();
-        now.set(0, 0, 0);
+    private Long getNextRestartTime(List<Long> restartTimes) {
+        // read current time but remove everything
+        // but hours and minutes for compare
+        Long nowOnlyTime = DateTimeHelper.getOnlyTime(new Date());
 
-        Calendar possibleRestartTime = null;
+        long possibleRestartTime = 0;
         // search times after current time and choose lowest
-        for (Calendar cal : restartTimes) {
-            if (possibleRestartTime == null) {
-                if (cal.after(now)) {
-                    possibleRestartTime = cal;
+        for (Long date : restartTimes) {
+            if (possibleRestartTime == 0) {
+                if (date > nowOnlyTime) {
+                    System.out.println("moegliche Restart Zeit gefunden");
+                    possibleRestartTime = date;
                 }
             } else {
-                if (cal.after(now)) {
-                    if (possibleRestartTime.after(cal)) {
-                        possibleRestartTime = cal;
+                if (date > nowOnlyTime) {
+                    System.out.println("moegliche Restart Zeit gefunden");
+                    if (possibleRestartTime > date) {
+                        possibleRestartTime = date;
                     }
                 }
             }
         }
-        // if possibleRestartTime is still null the next restart is after
-        // midnight
-        // that means we choose lowest time
-        if (possibleRestartTime == null) {
-            for (Calendar cal : restartTimes) {
-                if (possibleRestartTime == null) {
-                    possibleRestartTime = cal;
-                } else {
-                    if (cal.before(possibleRestartTime)) {
-                        possibleRestartTime = cal;
-                    }
-                }
-            }
+        // if possibleRestartTime is still null the next restart
+        // is after midnight that means we choose lowest time
+        if (possibleRestartTime == 0) {
+            possibleRestartTime = restartTimes.get(0);
         }
-        // next restart time found now add date info again
-        now = new GregorianCalendar();
-        possibleRestartTime.set(Calendar.YEAR, now.get(Calendar.YEAR));
-        possibleRestartTime.set(Calendar.MONTH, now.get(Calendar.MONTH));
-        possibleRestartTime.set(Calendar.DAY_OF_MONTH, now.get(Calendar.DAY_OF_MONTH));
-        possibleRestartTime.set(Calendar.SECOND, now.get(Calendar.SECOND));
-        System.out.println("Nächste Restart Zeit: " + printCalendarTime(possibleRestartTime));
-        // if possibleRestartTime is now before 'now' add a day to the object
-        // to be sure use milliseconds to take care of month or year change
-        if (possibleRestartTime.before(now)) {
-            long millis = possibleRestartTime.getTimeInMillis();
-            millis += TimeUnit.DAYS.toMillis(1);
-            possibleRestartTime.setTimeInMillis(millis);
-        }
-        possibleRestartTime.set(Calendar.SECOND, 0);
-        System.out.println("Verwendete Restart Zeit: " + printCalendarTime(possibleRestartTime));
+        System.out.println("Naechste Restart Zeit: " + possibleRestartTime);
         return possibleRestartTime;
     }
 
     @Override
     public void run() {
-        Calendar now = new GregorianCalendar();
+        long nextWarnTime;
+        Long nowOnlyTime = DateTimeHelper.getOnlyTime(new Date());
 
-        System.out.println("Check Time");
-        System.out.println("now = " + printCalendarTime(now));
-        System.out.println("shutdown = " + printCalendarTime(nextRestartTime));
-        long diff = nextRestartTime.getTimeInMillis() - now.getTimeInMillis();
-        diff /= 1000 * 60;
-        System.out.println("diff in minutes: " + diff);
-        int minutesLeft;
+        long difference = DateTimeHelper.getTimeDifference(nowOnlyTime, nextRestartTime);
+        long diff = TimeUnit.MILLISECONDS.toMinutes(difference);
+        System.out.println("Minutes until restart: " + diff);
         if (!warningTimes.isEmpty()) {
-            System.out.println("naechste Warnzeit = " + printCalendarTime(warningTimes.get(0)));
-            minutesLeft = warningTimes.get(0).get(Calendar.MINUTE);
+            nextWarnTime = TimeUnit.MILLISECONDS.toMinutes(warningTimes.get(0));
+            System.out.println("naechste Warnzeit:" + nextWarnTime + " Minuten vor Neustart");
         } else {
-            minutesLeft = 0;
+            nextWarnTime = 0;
         }
+        
         if (diff > 0) {
-            if (diff == minutesLeft) {
-                System.out.println("noch " + minutesLeft + " Minuten");
-                MessageThread msg = new MessageThread(minutesLeft);
+            if (diff == nextWarnTime) {
+                MessageThread msg = new MessageThread(nextWarnTime);
                 BukkitScheduler sched = Bukkit.getScheduler();
-                sched.scheduleSyncDelayedTask(AutoRestartCore.PLUGIN, msg, 1);
+                sched.scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin(AutoRestartCore.NAME), msg, 1);
                 warningTimes.remove(0);
             }
         } else {
-            System.out.println("restart now");
             StopThread stp = new StopThread();
             BukkitScheduler sched = Bukkit.getScheduler();
-            sched.scheduleSyncRepeatingTask(AutoRestartCore.PLUGIN, stp, 1, AutoRestartCore.secondsToTicks(10));
+            sched.scheduleSyncRepeatingTask(Bukkit.getPluginManager().getPlugin(AutoRestartCore.NAME), stp, 1, AutoRestartCore.secondsToTicks(10));
         }
     }
 }

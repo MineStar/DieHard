@@ -1,12 +1,16 @@
 VERSION: ${pom.version}
 # Alle Zeiten im Format hh:mm angegben
 Restart Times:
-    - "18:00"
-    - "23:59"
-    - "10:15"
+    - "02:00"
+    - "08:00"
+    - "14:00"
+    - "20:00"
 
 # Zeitdifferenz bis zum nächsten Restart
 Warning Times:
+    - "00:15"
     - "00:10"
     - "00:05"
+    - "00:03"
+    - "00:02"
     - "00:01"

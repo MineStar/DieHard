@@ -6,9 +6,9 @@ import org.bukkit.ChatColor;
 import de.minestar.autorestart.core.AutoRestartCore;
 
 public class MessageThread implements Runnable {
-    private final int minutes;
+    private final long minutes;
 
-    public MessageThread(int mins) {
+    public MessageThread(long mins) {
         this.minutes = mins;
     }
 
