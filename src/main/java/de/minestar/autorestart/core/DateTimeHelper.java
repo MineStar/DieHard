@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 public class DateTimeHelper {
     public static long getOnlyTime(Date date) {
+        // retrieve only time part and return as milliseconds sind epoch
         DateFormat df = DateFormat.getTimeInstance();
         String textTime = df.format(date);
         return getOnlyTimeLong(textTime);
@@ -14,6 +15,7 @@ public class DateTimeHelper {
     public static long getOnlyTimeLong(String timeText) {
         long result;
         long hours, minutes;
+        // convert times from config file to milliseconds since epoch
         String[] timeFragments = timeText.split(":");
         hours = Long.parseLong(timeFragments[0]);
         minutes = Long.parseLong(timeFragments[1]);
@@ -23,19 +25,20 @@ public class DateTimeHelper {
         return result;
     }
 
-    public static long getTimeDifference(long time1, long time2) {
+    public static long getTimeDifference(long startTime, long endtime) {
         long result;
-
-        if (time2 >= time1) {
-            result = time2 - time1;
+        if (endtime >= startTime) {
+            result = endtime - startTime;
         } else {
-            result = time2 + TimeUnit.DAYS.toMillis(1) - time1;
+            //
+            result = endtime + TimeUnit.DAYS.toMillis(1) - startTime;
         }
         return result;
     }
 
     public static String convertMillisToTime(long millis) {
         long hours, minutes;
+        // convert milliseconds since epoch to time in format HH:mm
         hours = TimeUnit.MILLISECONDS.toHours(millis);
         minutes = TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(hours);
         return String.format("%02d:%02d", hours, minutes);

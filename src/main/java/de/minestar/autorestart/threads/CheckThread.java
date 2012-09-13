@@ -52,6 +52,7 @@ public class CheckThread implements Runnable {
     private long getNextWarningTime(List<Long> warnTimes, long minutesLeft) {
         long nextWarnTime;
 
+        // find best fitting warning until restart from sorted list
         if (!warnTimes.isEmpty()) {
             nextWarnTime = TimeUnit.MILLISECONDS.toMinutes(warnTimes.get(0));
             if (nextWarnTime > minutesLeft) {
@@ -68,20 +69,25 @@ public class CheckThread implements Runnable {
     public void run() {
         int lastWarning;
         long nextWarnTime;
+        // current time as milliseconds since epoch for compare
         long nowOnlyTime = DateTimeHelper.getOnlyTime(new Date());
 
         long difference = DateTimeHelper.getTimeDifference(nowOnlyTime, nextRestartTime);
         long diff = TimeUnit.MILLISECONDS.toMinutes(difference);
         nextWarnTime = getNextWarningTime(warningTimes, diff);
-        
+
         if (diff > 0) {
             if (diff == nextWarnTime) {
+                // remaining time until restart equals next warning time
+                // --> broadcast message to players
                 MessageThread msg = new MessageThread(nextWarnTime);
                 BukkitScheduler sched = Bukkit.getScheduler();
                 sched.scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin(AutoRestartCore.NAME), msg, 1);
+                // take care to have next warning time at top of the list
                 warningTimes.remove(0);
             }
         } else {
+            // initiate server restart
             lastWarning = Settings.getLastWarning();
             StopThread stp = new StopThread();
             BukkitScheduler sched = Bukkit.getScheduler();

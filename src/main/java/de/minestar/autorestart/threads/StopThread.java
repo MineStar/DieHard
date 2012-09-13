@@ -11,11 +11,15 @@ public class StopThread implements Runnable {
 
     @Override
     public void run() {
+        // Thread will run twice
+        // first time to broadcast a final warning
+        // second time to safely stop the server
         if (!messageShown) {
             String message = String.format("[%s] ACHTUNG !!! Der Server wird JETZT neu gestartet!", AutoRestartCore.NAME);
             Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + message);
             messageShown = true;
         } else {
+            // be sure that everything gets saved before server shutdown
             Bukkit.savePlayers();
             for (World world : Bukkit.getWorlds()) {
                 world.save();
