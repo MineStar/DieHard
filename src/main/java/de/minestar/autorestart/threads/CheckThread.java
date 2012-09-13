@@ -10,6 +10,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import de.minestar.autorestart.core.AutoRestartCore;
 import de.minestar.autorestart.core.DateTimeHelper;
 import de.minestar.autorestart.core.Settings;
+import de.minestar.minestarlibrary.utils.ConsoleUtils;
 
 public class CheckThread implements Runnable {
     private long nextRestartTime;
@@ -45,7 +46,7 @@ public class CheckThread implements Runnable {
         if (possibleRestartTime == 0) {
             possibleRestartTime = restartTimes.get(0);
         }
-        AutoRestartCore.printInfo("Naechste Restart Zeit: " + DateTimeHelper.convertMillisToTime(possibleRestartTime));
+        ConsoleUtils.printInfo(AutoRestartCore.NAME, "Naechste Restart Zeit: " + DateTimeHelper.convertMillisToTime(possibleRestartTime));
         return possibleRestartTime;
     }
 

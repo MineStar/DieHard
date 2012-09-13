@@ -53,9 +53,9 @@ public class Settings {
         List<String> listRestartTimeText = config.getStringList("Restart Times");
 
         restartTimes = new ArrayList<Long>();
-        AutoRestartCore.printInfo("RestartTimes:");
+        ConsoleUtils.printInfo(AutoRestartCore.NAME, "RestartTimes:");
         for (String time : listRestartTimeText) {
-            AutoRestartCore.printInfo(time);
+            ConsoleUtils.printInfo(AutoRestartCore.NAME, time);
             restartTimes.add(DateTimeHelper.getOnlyTimeLong(time));
         }
         Collections.sort(restartTimes);
@@ -65,9 +65,9 @@ public class Settings {
         List<String> listWarningTimeText = config.getStringList("Warning Times");
 
         warningTimes = new ArrayList<Long>();
-        AutoRestartCore.printInfo("WarningTimes:");
+        ConsoleUtils.printInfo(AutoRestartCore.NAME, "WarningTimes:");
         for (String time : listWarningTimeText) {
-            AutoRestartCore.printInfo(time);
+            ConsoleUtils.printInfo(AutoRestartCore.NAME, time);
             warningTimes.add(DateTimeHelper.getOnlyTimeLong(time));
         }
         Collections.sort(warningTimes, Collections.reverseOrder());
@@ -75,7 +75,7 @@ public class Settings {
 
     private static void loadLastWarning() {
         lastWarning = config.getInt("Last Warning");
-        AutoRestartCore.printInfo("LastWarning: " + lastWarning);
+        ConsoleUtils.printInfo(AutoRestartCore.NAME, "LastWarning: " + lastWarning);
     }
 
     public static List<Long> getRestartTimes() {

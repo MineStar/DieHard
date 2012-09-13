@@ -6,7 +6,6 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import de.minestar.autorestart.threads.CheckThread;
 import de.minestar.minestarlibrary.AbstractCore;
-import de.minestar.minestarlibrary.utils.ConsoleUtils;
 
 public class AutoRestartCore extends AbstractCore {
     public static final String NAME = "AutoRestart";
@@ -34,9 +33,5 @@ public class AutoRestartCore extends AbstractCore {
     public static int secondsToTicks(int seconds) {
         int ticksPerSecond = 20;
         return ticksPerSecond * seconds;
-    }
-
-    public static void printInfo(String message) {
-        ConsoleUtils.printInfo("[" + AutoRestartCore.NAME + "] " + message);
     }
 }
