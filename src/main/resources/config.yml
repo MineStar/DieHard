@@ -1,12 +1,14 @@
 VERSION: ${pom.version}
-# Alle Zeiten im Format hh:mm angegben
+# Times at which the server shall restart
+# Format: HH:mm
 Restart Times:
     - "02:00"
     - "08:00"
     - "14:00"
     - "20:00"
 
-# Zeitdifferenz bis zum nächsten Restart
+# Time differences until restart to broadcast warning messages
+# Format: HH:mm
 Warning Times:
     - "00:15"
     - "00:10"
@@ -14,3 +16,7 @@ Warning Times:
     - "00:03"
     - "00:02"
     - "00:01"
+
+# Delay between last warning message and restart
+# value is in seconds
+Last Warning: 10

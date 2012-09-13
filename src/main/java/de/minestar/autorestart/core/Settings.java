@@ -14,15 +14,12 @@ public class Settings {
 
     private static List<Long> restartTimes;
     private static List<Long> warningTimes;
+    private static int lastWarning;
 
     /* USED FOR SETTING */
 
     private static MinestarConfig config;
     private static File configFile;
-
-    private Settings() {
-
-    }
 
     public static boolean init(File dataFolder, String pluginName, String pluginVersion) {
         configFile = new File(dataFolder, "config.yml");
@@ -48,34 +45,37 @@ public class Settings {
         loadRestartTimes();
         /* Warning times */
         loadWarningTimes();
+        /* Last warning time */
+        loadLastWarning();
     }
 
     private static void loadRestartTimes() {
         List<String> listRestartTimeText = config.getStringList("Restart Times");
 
         restartTimes = new ArrayList<Long>();
+        AutoRestartCore.printInfo("RestartTimes:");
         for (String time : listRestartTimeText) {
+            AutoRestartCore.printInfo(time);
             restartTimes.add(DateTimeHelper.getOnlyTimeLong(time));
         }
         Collections.sort(restartTimes);
-        System.out.println("RestartTimes:");
-        for (Long date : restartTimes) {
-            System.out.println("Restart Time in Millis: " + date.toString());
-        }
     }
-    
+
     private static void loadWarningTimes() {
         List<String> listWarningTimeText = config.getStringList("Warning Times");
 
         warningTimes = new ArrayList<Long>();
+        AutoRestartCore.printInfo("WarningTimes:");
         for (String time : listWarningTimeText) {
+            AutoRestartCore.printInfo(time);
             warningTimes.add(DateTimeHelper.getOnlyTimeLong(time));
         }
         Collections.sort(warningTimes, Collections.reverseOrder());
-        System.out.println("WarningTimes:");
-        for (Long date : warningTimes) {
-            System.out.println("Warning Time in Millis: " + date.toString());
-        }
+    }
+
+    private static void loadLastWarning() {
+        lastWarning = config.getInt("Last Warning");
+        AutoRestartCore.printInfo("LastWarning: " + lastWarning);
     }
 
     public static List<Long> getRestartTimes() {
@@ -84,5 +84,9 @@ public class Settings {
 
     public static List<Long> getWarningTimes() {
         return warningTimes;
+    }
+
+    public static int getLastWarning() {
+        return lastWarning;
     }
 }

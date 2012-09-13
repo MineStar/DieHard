@@ -1,7 +1,5 @@
 package de.minestar.autorestart.threads;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -11,6 +9,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import de.minestar.autorestart.core.AutoRestartCore;
 import de.minestar.autorestart.core.DateTimeHelper;
+import de.minestar.autorestart.core.Settings;
 
 public class CheckThread implements Runnable {
     private Long nextRestartTime;
@@ -19,11 +18,6 @@ public class CheckThread implements Runnable {
     public CheckThread(List<Long> restartTimes, List<Long> warningTimes) {
         this.nextRestartTime = getNextRestartTime(restartTimes);
         this.warningTimes = warningTimes;
-    }
-
-    public static String printCalendarTime(Calendar cal) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yy - HH:mm:ss");
-        return sdf.format(new Date(cal.getTimeInMillis()));
     }
 
     private Long getNextRestartTime(List<Long> restartTimes) {
@@ -36,12 +30,10 @@ public class CheckThread implements Runnable {
         for (Long date : restartTimes) {
             if (possibleRestartTime == 0) {
                 if (date > nowOnlyTime) {
-                    System.out.println("moegliche Restart Zeit gefunden");
                     possibleRestartTime = date;
                 }
             } else {
                 if (date > nowOnlyTime) {
-                    System.out.println("moegliche Restart Zeit gefunden");
                     if (possibleRestartTime > date) {
                         possibleRestartTime = date;
                     }
@@ -53,24 +45,34 @@ public class CheckThread implements Runnable {
         if (possibleRestartTime == 0) {
             possibleRestartTime = restartTimes.get(0);
         }
-        System.out.println("Naechste Restart Zeit: " + possibleRestartTime);
+        AutoRestartCore.printInfo("Naechste Restart Zeit: " + DateTimeHelper.convertMillisToTime(possibleRestartTime));
         return possibleRestartTime;
+    }
+
+    private long getNextWarningTime(List<Long> warnTimes, long minutesLeft) {
+        long nextWarnTime;
+
+        if (!warnTimes.isEmpty()) {
+            nextWarnTime = TimeUnit.MILLISECONDS.toMinutes(warnTimes.get(0));
+            if (nextWarnTime > minutesLeft) {
+                warningTimes.remove(0);
+                return getNextWarningTime(warnTimes, minutesLeft);
+            }
+        } else {
+            nextWarnTime = 0;
+        }
+        return nextWarnTime;
     }
 
     @Override
     public void run() {
+        int lastWarning;
         long nextWarnTime;
         Long nowOnlyTime = DateTimeHelper.getOnlyTime(new Date());
 
         long difference = DateTimeHelper.getTimeDifference(nowOnlyTime, nextRestartTime);
         long diff = TimeUnit.MILLISECONDS.toMinutes(difference);
-        System.out.println("Minutes until restart: " + diff);
-        if (!warningTimes.isEmpty()) {
-            nextWarnTime = TimeUnit.MILLISECONDS.toMinutes(warningTimes.get(0));
-            System.out.println("naechste Warnzeit:" + nextWarnTime + " Minuten vor Neustart");
-        } else {
-            nextWarnTime = 0;
-        }
+        nextWarnTime = getNextWarningTime(warningTimes, diff);
         
         if (diff > 0) {
             if (diff == nextWarnTime) {
@@ -80,9 +82,10 @@ public class CheckThread implements Runnable {
                 warningTimes.remove(0);
             }
         } else {
+            lastWarning = Settings.getLastWarning();
             StopThread stp = new StopThread();
             BukkitScheduler sched = Bukkit.getScheduler();
-            sched.scheduleSyncRepeatingTask(Bukkit.getPluginManager().getPlugin(AutoRestartCore.NAME), stp, 1, AutoRestartCore.secondsToTicks(10));
+            sched.scheduleSyncRepeatingTask(Bukkit.getPluginManager().getPlugin(AutoRestartCore.NAME), stp, 1, AutoRestartCore.secondsToTicks(lastWarning));
         }
     }
 }
