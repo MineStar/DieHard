@@ -13,11 +13,11 @@ import de.minestar.autorestart.core.Settings;
 import de.minestar.minestarlibrary.utils.ConsoleUtils;
 
 public class CheckThread implements Runnable {
-    private long nextRestartTime;
+    private static long nextRestartTime;
     private List<Long> warningTimes;
 
     public CheckThread(List<Long> restartTimes, List<Long> warningTimes) {
-        this.nextRestartTime = getNextRestartTime(restartTimes);
+        CheckThread.nextRestartTime = getNextRestartTime(restartTimes);
         this.warningTimes = warningTimes;
     }
 
@@ -64,6 +64,18 @@ public class CheckThread implements Runnable {
             nextWarnTime = 0;
         }
         return nextWarnTime;
+    }
+
+    public static void setNextRestart(String textMinutesUntilRestart) {
+        long nowOnlyTime = DateTimeHelper.getOnlyTime(new Date());
+        long minutesUntilRestart = Long.parseLong(textMinutesUntilRestart);
+        nextRestartTime = nowOnlyTime + TimeUnit.MINUTES.toMillis(minutesUntilRestart);
+        ConsoleUtils.printInfo(AutoRestartCore.NAME, "Restart Zeit geaendert auf: " + DateTimeHelper.convertMillisToTime(nextRestartTime));
+
+        // inform players about broadcast of the restart
+        MessageThread msg = new MessageThread(minutesUntilRestart);
+        BukkitScheduler sched = Bukkit.getScheduler();
+        sched.scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin(AutoRestartCore.NAME), msg, 1);
     }
 
     @Override

@@ -4,8 +4,10 @@ import java.io.File;
 
 import org.bukkit.scheduler.BukkitScheduler;
 
+import de.minestar.autorestart.commands.cmdRestart;
 import de.minestar.autorestart.threads.CheckThread;
 import de.minestar.minestarlibrary.AbstractCore;
+import de.minestar.minestarlibrary.commands.CommandList;
 
 public class AutoRestartCore extends AbstractCore {
     public static final String NAME = "AutoRestart";
@@ -28,6 +30,18 @@ public class AutoRestartCore extends AbstractCore {
     @Override
     protected boolean loadingConfigs(File dataFolder) {
         return Settings.init(dataFolder, NAME, getDescription().getVersion());
+    }
+
+    @Override
+    protected boolean createCommands() {
+        //@formatter:off
+        System.out.println("creat CMd");
+        cmdList = new CommandList(NAME,
+                // RESTART COMMAND
+                new cmdRestart("/restart", "<Time in minutes>", "autorestart.commands.restart")
+            );
+            //@formatter:on
+        return true;
     }
 
     public static int secondsToTicks(int seconds) {
