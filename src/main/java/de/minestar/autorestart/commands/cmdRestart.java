@@ -25,7 +25,9 @@ public class cmdRestart extends AbstractCommand {
      * @param split
      */
     public void execute(String[] args, Player player) {
-        ChatUtils.writeError(player, "Kommando kann nur von Konsole verwendet werden");
+        if (!restart(args)) {
+            ChatUtils.writeError(player, "Argument muss Ganzzahl sein");
+        }
     }
 
     @Override
