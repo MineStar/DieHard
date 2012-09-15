@@ -55,9 +55,8 @@ public class CheckThread implements Runnable {
         return nextWarnTime;
     }
 
-    public static void setNextRestart(String textMinutesUntilRestart) {
+    public static void setNextRestart(int minutesUntilRestart) {
         long nowOnlyTime = DateTimeHelper.getOnlyTime(new Date());
-        long minutesUntilRestart = Long.parseLong(textMinutesUntilRestart);
         nextRestartTime = nowOnlyTime + TimeUnit.MINUTES.toMillis(minutesUntilRestart);
         ConsoleUtils.printInfo(AutoRestartCore.NAME, "Restart Zeit geaendert auf: " + DateTimeHelper.convertMillisToTime(nextRestartTime));
 
