@@ -26,26 +26,15 @@ public class CheckThread implements Runnable {
         // but hours and minutes for compare
         long nowOnlyTime = DateTimeHelper.getOnlyTime(new Date());
 
-        long possibleRestartTime = 0;
-        // search times after current time and choose lowest
+        long possibleRestartTime = restartTimes.get(0);
+        // search restart times after current time or stick to the first in list
         for (long date : restartTimes) {
-            if (possibleRestartTime == 0) {
-                if (date > nowOnlyTime) {
-                    possibleRestartTime = date;
-                }
-            } else {
-                if (date > nowOnlyTime) {
-                    if (possibleRestartTime > date) {
-                        possibleRestartTime = date;
-                    }
-                }
+            if (date > nowOnlyTime) {
+                possibleRestartTime = date;
+                break;
             }
         }
-        // if possibleRestartTime is still null the next restart
-        // is after midnight that means we choose lowest time
-        if (possibleRestartTime == 0) {
-            possibleRestartTime = restartTimes.get(0);
-        }
+
         ConsoleUtils.printInfo(AutoRestartCore.NAME, "Naechste Restart Zeit: " + DateTimeHelper.convertMillisToTime(possibleRestartTime));
         return possibleRestartTime;
     }
@@ -85,8 +74,7 @@ public class CheckThread implements Runnable {
         // current time as milliseconds since epoch for compare
         long nowOnlyTime = DateTimeHelper.getOnlyTime(new Date());
 
-        long difference = DateTimeHelper.getTimeDifference(nowOnlyTime, nextRestartTime);
-        long diff = TimeUnit.MILLISECONDS.toMinutes(difference);
+        long diff = TimeUnit.MILLISECONDS.toMinutes(DateTimeHelper.getTimeDifference(nowOnlyTime, nextRestartTime));
         nextWarnTime = getNextWarningTime(warningTimes, diff);
 
         if (diff > 0) {
