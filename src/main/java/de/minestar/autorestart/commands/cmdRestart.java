@@ -11,7 +11,6 @@ import de.minestar.minestarlibrary.utils.ChatUtils;
 public class cmdRestart extends AbstractCommand {
     public cmdRestart(String syntax, String arguments, String node) {
         super(AutoRestartCore.NAME, syntax, arguments, node);
-        System.out.println("inst CMd");
     }
 
     @Override

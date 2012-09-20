@@ -35,7 +35,6 @@ public class AutoRestartCore extends AbstractCore {
     @Override
     protected boolean createCommands() {
         //@formatter:off
-        System.out.println("creat CMd");
         cmdList = new CommandList(NAME,
                 // RESTART COMMAND
                 new cmdRestart("/restart", "<Time in minutes>", "autorestart.commands.restart")
