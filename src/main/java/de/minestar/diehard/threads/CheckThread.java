@@ -15,10 +15,12 @@ import de.minestar.minestarlibrary.utils.ConsoleUtils;
 public class CheckThread implements Runnable {
     private static long nextRestartTime;
     private List<Long> warningTimes;
+    private int warningTimesIndex;
 
     public CheckThread(List<Long> restartTimes, List<Long> warningTimes) {
         CheckThread.nextRestartTime = getNextRestartTime(restartTimes);
         this.warningTimes = warningTimes;
+        warningTimesIndex = 0;
     }
 
     private long getNextRestartTime(List<Long> restartTimes) {
@@ -43,10 +45,10 @@ public class CheckThread implements Runnable {
         long nextWarnTime;
 
         // find best fitting warning until restart from sorted list
-        if (!warnTimes.isEmpty()) {
-            nextWarnTime = TimeUnit.MILLISECONDS.toMinutes(warnTimes.get(0));
+        if (warningTimesIndex < warnTimes.size()) {
+            nextWarnTime = TimeUnit.MILLISECONDS.toMinutes(warnTimes.get(warningTimesIndex));
             if (nextWarnTime > minutesLeft) {
-                warningTimes.remove(0);
+                warningTimesIndex++;
                 return getNextWarningTime(warnTimes, minutesLeft);
             }
         } else {
@@ -59,11 +61,6 @@ public class CheckThread implements Runnable {
         long nowOnlyTime = DateTimeHelper.getOnlyTime(new Date());
         nextRestartTime = nowOnlyTime + TimeUnit.MINUTES.toMillis(minutesUntilRestart);
         ConsoleUtils.printInfo(DieHardCore.NAME, "Restart Zeit geaendert auf: " + DateTimeHelper.convertMillisToTime(nextRestartTime));
-
-        // inform players about broadcast of the restart
-        MessageThread msg = new MessageThread(minutesUntilRestart);
-        BukkitScheduler sched = Bukkit.getScheduler();
-        sched.scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin(DieHardCore.NAME), msg, 1);
     }
 
     @Override

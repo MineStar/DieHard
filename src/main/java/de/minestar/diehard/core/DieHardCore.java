@@ -2,6 +2,8 @@ package de.minestar.diehard.core;
 
 import java.io.File;
 
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import de.minestar.diehard.commands.cmdRestart;
@@ -12,19 +14,19 @@ import de.minestar.minestarlibrary.commands.CommandList;
 public class DieHardCore extends AbstractCore {
     public static final String NAME = "DieHard";
 
-    private CheckThread checkThread;
+    private static CheckThread checkThread;
 
     @Override
     protected boolean createThreads() {
-        this.checkThread = new CheckThread(Settings.getRestartTimes(), Settings.getWarningTimes());
+        checkThread = new CheckThread(Settings.getRestartTimes(), Settings.getWarningTimes());
         return true;
     }
 
     @Override
     protected boolean startThreads(BukkitScheduler scheduler) {
         // start CheckThread with 5 seconds delay and repeat every minute
-        scheduler.scheduleAsyncRepeatingTask(this, this.checkThread, secondsToTicks(5), secondsToTicks(60));
-        return super.startThreads(scheduler);
+        scheduler.scheduleAsyncRepeatingTask(this, checkThread, secondsToTicks(5), secondsToTicks(60));
+        return true;
     }
 
     @Override
@@ -46,5 +48,14 @@ public class DieHardCore extends AbstractCore {
     public static int secondsToTicks(int seconds) {
         int ticksPerSecond = 20;
         return ticksPerSecond * seconds;
+    }
+
+    public static void restartCheckThread(int minutesUntilRestart) {
+        Plugin plugin = Bukkit.getPluginManager().getPlugin(DieHardCore.NAME);
+        BukkitScheduler scheduler = Bukkit.getScheduler();
+        scheduler.cancelTasks(plugin);
+        checkThread = new CheckThread(Settings.getRestartTimes(), Settings.getWarningTimes());
+        scheduler.scheduleAsyncRepeatingTask(plugin, checkThread, secondsToTicks(5), secondsToTicks(60));
+        CheckThread.setNextRestart(minutesUntilRestart);
     }
 }

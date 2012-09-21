@@ -4,7 +4,6 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import de.minestar.diehard.core.DieHardCore;
-import de.minestar.diehard.threads.CheckThread;
 import de.minestar.minestarlibrary.commands.AbstractCommand;
 import de.minestar.minestarlibrary.utils.ChatUtils;
 
@@ -40,7 +39,7 @@ public class cmdRestart extends AbstractCommand {
         int minutesUntilRestart;
         try {
             minutesUntilRestart = Integer.valueOf(args[0]);
-            CheckThread.setNextRestart(minutesUntilRestart);
+            DieHardCore.restartCheckThread(minutesUntilRestart);
             return true;
         } catch (Exception e) {
             return false;
