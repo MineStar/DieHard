@@ -1,4 +1,4 @@
-package de.minestar.autorestart.core;
+package de.minestar.diehard.core;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -53,9 +53,9 @@ public class Settings {
         List<String> listRestartTimeText = config.getStringList("Restart Times");
 
         restartTimes = new ArrayList<Long>();
-        ConsoleUtils.printInfo(AutoRestartCore.NAME, "RestartTimes:");
+        ConsoleUtils.printInfo(DieHardCore.NAME, "RestartTimes:");
         for (String time : listRestartTimeText) {
-            ConsoleUtils.printInfo(AutoRestartCore.NAME, time);
+            ConsoleUtils.printInfo(DieHardCore.NAME, time);
             restartTimes.add(DateTimeHelper.getOnlyTimeLong(time));
         }
         Collections.sort(restartTimes);
@@ -65,9 +65,9 @@ public class Settings {
         List<String> listWarningTimeText = config.getStringList("Warning Times");
 
         warningTimes = new ArrayList<Long>();
-        ConsoleUtils.printInfo(AutoRestartCore.NAME, "WarningTimes:");
+        ConsoleUtils.printInfo(DieHardCore.NAME, "WarningTimes:");
         for (String time : listWarningTimeText) {
-            ConsoleUtils.printInfo(AutoRestartCore.NAME, time);
+            ConsoleUtils.printInfo(DieHardCore.NAME, time);
             warningTimes.add(DateTimeHelper.getOnlyTimeLong(time));
         }
         Collections.sort(warningTimes, Collections.reverseOrder());
@@ -75,7 +75,7 @@ public class Settings {
 
     private static void loadLastWarning() {
         lastWarning = config.getInt("Last Warning");
-        ConsoleUtils.printInfo(AutoRestartCore.NAME, "LastWarning: " + lastWarning);
+        ConsoleUtils.printInfo(DieHardCore.NAME, "LastWarning: " + lastWarning);
     }
 
     public static List<Long> getRestartTimes() {

@@ -1,4 +1,4 @@
-package de.minestar.autorestart.threads;
+package de.minestar.diehard.threads;
 
 import java.util.Date;
 import java.util.List;
@@ -7,9 +7,9 @@ import java.util.concurrent.TimeUnit;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import de.minestar.autorestart.core.AutoRestartCore;
-import de.minestar.autorestart.core.DateTimeHelper;
-import de.minestar.autorestart.core.Settings;
+import de.minestar.diehard.core.DieHardCore;
+import de.minestar.diehard.core.DateTimeHelper;
+import de.minestar.diehard.core.Settings;
 import de.minestar.minestarlibrary.utils.ConsoleUtils;
 
 public class CheckThread implements Runnable {
@@ -35,7 +35,7 @@ public class CheckThread implements Runnable {
             }
         }
 
-        ConsoleUtils.printInfo(AutoRestartCore.NAME, "Naechste Restart Zeit: " + DateTimeHelper.convertMillisToTime(possibleRestartTime));
+        ConsoleUtils.printInfo(DieHardCore.NAME, "Naechste Restart Zeit: " + DateTimeHelper.convertMillisToTime(possibleRestartTime));
         return possibleRestartTime;
     }
 
@@ -58,12 +58,12 @@ public class CheckThread implements Runnable {
     public static void setNextRestart(int minutesUntilRestart) {
         long nowOnlyTime = DateTimeHelper.getOnlyTime(new Date());
         nextRestartTime = nowOnlyTime + TimeUnit.MINUTES.toMillis(minutesUntilRestart);
-        ConsoleUtils.printInfo(AutoRestartCore.NAME, "Restart Zeit geaendert auf: " + DateTimeHelper.convertMillisToTime(nextRestartTime));
+        ConsoleUtils.printInfo(DieHardCore.NAME, "Restart Zeit geaendert auf: " + DateTimeHelper.convertMillisToTime(nextRestartTime));
 
         // inform players about broadcast of the restart
         MessageThread msg = new MessageThread(minutesUntilRestart);
         BukkitScheduler sched = Bukkit.getScheduler();
-        sched.scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin(AutoRestartCore.NAME), msg, 1);
+        sched.scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin(DieHardCore.NAME), msg, 1);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class CheckThread implements Runnable {
                 // --> broadcast message to players
                 MessageThread msg = new MessageThread(nextWarnTime);
                 BukkitScheduler sched = Bukkit.getScheduler();
-                sched.scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin(AutoRestartCore.NAME), msg, 1);
+                sched.scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin(DieHardCore.NAME), msg, 1);
                 // take care to have next warning time at top of the list
                 warningTimes.remove(0);
             }
@@ -91,7 +91,7 @@ public class CheckThread implements Runnable {
             lastWarning = Settings.getLastWarning();
             StopThread stp = new StopThread();
             BukkitScheduler sched = Bukkit.getScheduler();
-            sched.scheduleSyncRepeatingTask(Bukkit.getPluginManager().getPlugin(AutoRestartCore.NAME), stp, 1, AutoRestartCore.secondsToTicks(lastWarning));
+            sched.scheduleSyncRepeatingTask(Bukkit.getPluginManager().getPlugin(DieHardCore.NAME), stp, 1, DieHardCore.secondsToTicks(lastWarning));
         }
     }
 }

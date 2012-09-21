@@ -1,16 +1,16 @@
-package de.minestar.autorestart.commands;
+package de.minestar.diehard.commands;
 
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-import de.minestar.autorestart.core.AutoRestartCore;
-import de.minestar.autorestart.threads.CheckThread;
+import de.minestar.diehard.core.DieHardCore;
+import de.minestar.diehard.threads.CheckThread;
 import de.minestar.minestarlibrary.commands.AbstractCommand;
 import de.minestar.minestarlibrary.utils.ChatUtils;
 
 public class cmdRestart extends AbstractCommand {
     public cmdRestart(String syntax, String arguments, String node) {
-        super(AutoRestartCore.NAME, syntax, arguments, node);
+        super(DieHardCore.NAME, syntax, arguments, node);
     }
 
     @Override

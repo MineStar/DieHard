@@ -1,5 +1,5 @@
-name: AutoRestart
-main: de.minestar.autorestart.core.AutoRestartCore
+name: DieHard
+main: de.minestar.diehard.core.DieHardCore
 version: ${pom.version}
 depend: [MineStarLibrary]
 commands:

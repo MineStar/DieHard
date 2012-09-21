@@ -1,16 +1,16 @@
-package de.minestar.autorestart.core;
+package de.minestar.diehard.core;
 
 import java.io.File;
 
 import org.bukkit.scheduler.BukkitScheduler;
 
-import de.minestar.autorestart.commands.cmdRestart;
-import de.minestar.autorestart.threads.CheckThread;
+import de.minestar.diehard.commands.cmdRestart;
+import de.minestar.diehard.threads.CheckThread;
 import de.minestar.minestarlibrary.AbstractCore;
 import de.minestar.minestarlibrary.commands.CommandList;
 
-public class AutoRestartCore extends AbstractCore {
-    public static final String NAME = "AutoRestart";
+public class DieHardCore extends AbstractCore {
+    public static final String NAME = "DieHard";
 
     private CheckThread checkThread;
 
@@ -37,7 +37,7 @@ public class AutoRestartCore extends AbstractCore {
         //@formatter:off
         cmdList = new CommandList(NAME,
                 // RESTART COMMAND
-                new cmdRestart("/restart", "<Time in minutes>", "autorestart.commands.restart")
+                new cmdRestart("/restart", "<Time in minutes>", "diehard.commands.restart")
             );
             //@formatter:on
         return true;
