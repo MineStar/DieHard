@@ -23,6 +23,12 @@ public class CheckThread implements Runnable {
         warningTimesIndex = 0;
     }
 
+    public CheckThread(int minutesUntilRestart, List<Long> warningTimes) {
+        CheckThread.setNextRestart(minutesUntilRestart);
+        this.warningTimes = warningTimes;
+        warningTimesIndex = 0;
+    }
+
     private long getNextRestartTime(List<Long> restartTimes) {
         // read current time but remove everything
         // but hours and minutes for compare
@@ -57,9 +63,9 @@ public class CheckThread implements Runnable {
         return nextWarnTime;
     }
 
-    public static void setNextRestart(int minutesUntilRestart) {
+    private static void setNextRestart(int minutesUntilRestart) {
         long nowOnlyTime = DateTimeHelper.getOnlyTime(new Date());
-        nextRestartTime = nowOnlyTime + TimeUnit.MINUTES.toMillis(minutesUntilRestart);
+        CheckThread.nextRestartTime = nowOnlyTime + TimeUnit.MINUTES.toMillis(minutesUntilRestart);
         ConsoleUtils.printInfo(DieHardCore.NAME, "Restart Zeit geaendert auf: " + DateTimeHelper.convertMillisToTime(nextRestartTime));
     }
 

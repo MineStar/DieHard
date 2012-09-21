@@ -54,8 +54,7 @@ public class DieHardCore extends AbstractCore {
         Plugin plugin = Bukkit.getPluginManager().getPlugin(DieHardCore.NAME);
         BukkitScheduler scheduler = Bukkit.getScheduler();
         scheduler.cancelTasks(plugin);
-        checkThread = new CheckThread(Settings.getRestartTimes(), Settings.getWarningTimes());
+        checkThread = new CheckThread(minutesUntilRestart, Settings.getWarningTimes());
         scheduler.scheduleAsyncRepeatingTask(plugin, checkThread, secondsToTicks(5), secondsToTicks(60));
-        CheckThread.setNextRestart(minutesUntilRestart);
     }
 }
