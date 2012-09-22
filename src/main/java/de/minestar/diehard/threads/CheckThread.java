@@ -65,8 +65,14 @@ public class CheckThread implements Runnable {
 
     private static void setNextRestart(int minutesUntilRestart) {
         long nowOnlyTime = DateTimeHelper.getOnlyTime(new Date());
+        System.out.println(String.format("restart: %d", CheckThread.nextRestartTime));
+        System.out.println(String.format("24h: %d", TimeUnit.HOURS.toMillis(24)));
+        if (CheckThread.nextRestartTime >= TimeUnit.HOURS.toMillis(24)) {
+            CheckThread.nextRestartTime -= TimeUnit.HOURS.toMillis(24);
+        }
         CheckThread.nextRestartTime = nowOnlyTime + TimeUnit.MINUTES.toMillis(minutesUntilRestart);
-        ConsoleUtils.printInfo(DieHardCore.NAME, "Restart Zeit geaendert auf: " + DateTimeHelper.convertMillisToTime(nextRestartTime));
+        
+        ConsoleUtils.printInfo(DieHardCore.NAME, "Restart Zeit geaendert auf: " + DateTimeHelper.convertMillisToTime(CheckThread.nextRestartTime));
     }
 
     @Override
