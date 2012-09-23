@@ -17,7 +17,7 @@ public class CheckThread implements Runnable {
     private List<Long> warningTimes;
     private int warningTimesIndex;
 
-    public CheckThread() {
+    private CheckThread() {
         this.warningTimes = Settings.getWarningTimes();
         this.warningTimesIndex = 0;
     }
