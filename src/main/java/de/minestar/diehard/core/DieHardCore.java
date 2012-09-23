@@ -16,6 +16,10 @@ public class DieHardCore extends AbstractCore {
 
     private static CheckThread checkThread;
 
+    public DieHardCore() {
+        super(NAME);
+    }
+
     @Override
     protected boolean createThreads() {
         checkThread = new CheckThread(Settings.getRestartTimes(), Settings.getWarningTimes());
