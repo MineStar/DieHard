@@ -1,5 +1,6 @@
 package de.minestar.diehard.commands;
 
+import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
@@ -23,25 +24,24 @@ public class cmdRestart extends AbstractCommand {
      * @param split
      */
     public void execute(String[] args, Player player) {
-        if (!restart(args)) {
-            ChatUtils.writeError(player, "Argument muss Ganzzahl sein");
-        }
+        restart(player, args);
     }
 
     @Override
     public void execute(String[] args, ConsoleCommandSender console) {
-        if (!restart(args)) {
-            ChatUtils.writeError(console, "Argument was not an Integer");
-        }
+        restart(console, args);
     }
 
-    private boolean restart(String[] args) {
+    private boolean restart(CommandSender sender, String[] args) {
         int minutesUntilRestart;
         try {
             minutesUntilRestart = Integer.valueOf(args[0]);
             DieHardCore.restartCheckThread(minutesUntilRestart);
+            String message = String.format("Server Neustart in %d %s", minutesUntilRestart, minutesUntilRestart == 1 ? "Minute" : "Minuten");
+            ChatUtils.writeInfo(sender, DieHardCore.NAME, message);
             return true;
         } catch (Exception e) {
+            ChatUtils.writeError(sender, "Argument must be an Integer");
             return false;
         }
     }
