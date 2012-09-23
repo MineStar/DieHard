@@ -20,13 +20,13 @@ public class CheckThread implements Runnable {
     public CheckThread(List<Long> restartTimes, List<Long> warningTimes) {
         CheckThread.nextRestartTime = getNextRestartTime(restartTimes);
         this.warningTimes = warningTimes;
-        warningTimesIndex = 0;
+        this.warningTimesIndex = 0;
     }
 
     public CheckThread(int minutesUntilRestart, List<Long> warningTimes) {
         CheckThread.setNextRestart(minutesUntilRestart);
         this.warningTimes = warningTimes;
-        warningTimesIndex = 0;
+        this.warningTimesIndex = 0;
     }
 
     private long getNextRestartTime(List<Long> restartTimes) {
@@ -90,8 +90,6 @@ public class CheckThread implements Runnable {
                 MessageThread msg = new MessageThread(nextWarnTime);
                 BukkitScheduler sched = Bukkit.getScheduler();
                 sched.scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin(DieHardCore.NAME), msg, 1);
-                // take care to have next warning time at top of the list
-                warningTimes.remove(0);
             }
         } else {
             // initiate server restart
