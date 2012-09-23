@@ -14,7 +14,7 @@ public class MessageThread implements Runnable {
 
     @Override
     public void run() {
-        String message = String.format("[%s] ACHTUNG !!! Der Server wird in %d Minuten neu gestartet!", DieHardCore.NAME, this.minutes);
+        String message = String.format("[%s] ACHTUNG !!! Der Server wird in %d %s neu gestartet!", DieHardCore.NAME, this.minutes, this.minutes == 1 ? "Minute" : "Minuten");
         Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + message);
     }
 }
