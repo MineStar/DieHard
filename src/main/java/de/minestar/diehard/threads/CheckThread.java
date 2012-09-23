@@ -17,16 +17,19 @@ public class CheckThread implements Runnable {
     private List<Long> warningTimes;
     private int warningTimesIndex;
 
-    public CheckThread(List<Long> restartTimes, List<Long> warningTimes) {
-        CheckThread.nextRestartTime = getNextRestartTime(restartTimes);
-        this.warningTimes = warningTimes;
+    public CheckThread() {
+        this.warningTimes = Settings.getWarningTimes();
         this.warningTimesIndex = 0;
     }
 
-    public CheckThread(int minutesUntilRestart, List<Long> warningTimes) {
+    public CheckThread(List<Long> restartTimes) {
+        this();
+        CheckThread.nextRestartTime = getNextRestartTime(restartTimes);
+    }
+
+    public CheckThread(int minutesUntilRestart) {
+        this();
         CheckThread.setNextRestart(minutesUntilRestart);
-        this.warningTimes = warningTimes;
-        this.warningTimesIndex = 0;
     }
 
     private long getNextRestartTime(List<Long> restartTimes) {

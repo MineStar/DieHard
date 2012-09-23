@@ -22,7 +22,7 @@ public class DieHardCore extends AbstractCore {
 
     @Override
     protected boolean createThreads() {
-        checkThread = new CheckThread(Settings.getRestartTimes(), Settings.getWarningTimes());
+        checkThread = new CheckThread(Settings.getRestartTimes());
         return true;
     }
 
@@ -58,7 +58,7 @@ public class DieHardCore extends AbstractCore {
         Plugin plugin = Bukkit.getPluginManager().getPlugin(DieHardCore.NAME);
         BukkitScheduler scheduler = Bukkit.getScheduler();
         scheduler.cancelTasks(plugin);
-        checkThread = new CheckThread(minutesUntilRestart, Settings.getWarningTimes());
+        checkThread = new CheckThread(minutesUntilRestart);
         scheduler.scheduleAsyncRepeatingTask(plugin, checkThread, secondsToTicks(5), secondsToTicks(60));
     }
 }
