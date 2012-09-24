@@ -10,7 +10,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import de.minestar.diehard.core.DieHardCore;
 import de.minestar.diehard.core.DateTimeHelper;
 import de.minestar.diehard.core.Settings;
-import de.minestar.minestarlibrary.utils.ConsoleUtils;
+import de.minestar.minestarlibrary.utils.ChatUtils;
 
 public class CheckThread implements Runnable {
     private static long nextRestartTime;
@@ -43,7 +43,7 @@ public class CheckThread implements Runnable {
             }
         }
 
-        ConsoleUtils.printInfo(DieHardCore.NAME, "Naechste Restart Zeit: " + DateTimeHelper.convertMillisToTime(possibleRestartTime));
+        ChatUtils.writeInfo(Bukkit.getConsoleSender(), DieHardCore.NAME, "Naechste Restart Zeit: " + DateTimeHelper.convertMillisToTime(possibleRestartTime));
         return possibleRestartTime;
     }
 
@@ -70,7 +70,7 @@ public class CheckThread implements Runnable {
             CheckThread.nextRestartTime -= TimeUnit.HOURS.toMillis(24);
         }
 
-        ConsoleUtils.printInfo(DieHardCore.NAME, "Restart Zeit geaendert auf: " + DateTimeHelper.convertMillisToTime(CheckThread.nextRestartTime));
+        ChatUtils.writeInfo(Bukkit.getConsoleSender(), DieHardCore.NAME, "Restart Zeit geaendert auf: " + DateTimeHelper.convertMillisToTime(CheckThread.nextRestartTime));
     }
 
     @Override

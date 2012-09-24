@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.bukkit.Bukkit;
+
 import de.minestar.minestarlibrary.config.MinestarConfig;
-import de.minestar.minestarlibrary.utils.ConsoleUtils;
+import de.minestar.minestarlibrary.utils.ChatUtils;
 
 public class Settings {
 
@@ -35,7 +37,7 @@ public class Settings {
             return true;
 
         } catch (Exception e) {
-            ConsoleUtils.printException(e, pluginName, "Can't load the settings from " + configFile);
+            ChatUtils.writeError(Bukkit.getConsoleSender(), pluginName, "Can't load the settings from " + configFile);
             return false;
         }
     }
@@ -53,9 +55,9 @@ public class Settings {
         List<String> listRestartTimeText = config.getStringList("Restart Times");
 
         restartTimes = new ArrayList<Long>();
-        ConsoleUtils.printInfo(DieHardCore.NAME, "RestartTimes:");
+        ChatUtils.writeInfo(Bukkit.getConsoleSender(), DieHardCore.NAME, "RestartTimes:");
         for (String time : listRestartTimeText) {
-            ConsoleUtils.printInfo(DieHardCore.NAME, time);
+            ChatUtils.writeInfo(Bukkit.getConsoleSender(), DieHardCore.NAME, time);
             restartTimes.add(DateTimeHelper.getOnlyTimeLong(time));
         }
         Collections.sort(restartTimes);
@@ -65,9 +67,9 @@ public class Settings {
         List<String> listWarningTimeText = config.getStringList("Warning Times");
 
         warningTimes = new ArrayList<Long>();
-        ConsoleUtils.printInfo(DieHardCore.NAME, "WarningTimes:");
+        ChatUtils.writeInfo(Bukkit.getConsoleSender(), DieHardCore.NAME, "WarningTimes:");
         for (String time : listWarningTimeText) {
-            ConsoleUtils.printInfo(DieHardCore.NAME, time);
+            ChatUtils.writeInfo(Bukkit.getConsoleSender(), DieHardCore.NAME, time);
             warningTimes.add(DateTimeHelper.getOnlyTimeLong(time));
         }
         Collections.sort(warningTimes, Collections.reverseOrder());
@@ -75,7 +77,7 @@ public class Settings {
 
     private static void loadLastWarning() {
         lastWarning = config.getInt("Last Warning");
-        ConsoleUtils.printInfo(DieHardCore.NAME, "LastWarning: " + lastWarning);
+        ChatUtils.writeInfo(Bukkit.getConsoleSender(), DieHardCore.NAME, "LastWarning: " + lastWarning);
     }
 
     public static List<Long> getRestartTimes() {
