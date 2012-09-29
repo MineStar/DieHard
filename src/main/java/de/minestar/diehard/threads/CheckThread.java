@@ -32,6 +32,10 @@ public class CheckThread implements Runnable {
         CheckThread.setNextRestart(minutesUntilRestart);
     }
 
+    public static String showNextRestartTime() {
+        return DateTimeHelper.convertMillisToTime(CheckThread.nextRestartTime);
+    }
+
     private long getNextRestartTime(List<Long> restartTimes) {
         // read current time but remove everything
         // but hours and minutes for compare
