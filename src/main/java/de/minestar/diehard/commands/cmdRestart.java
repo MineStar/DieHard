@@ -4,6 +4,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
+import de.minestar.diehard.core.DateTimeHelper;
 import de.minestar.diehard.core.DieHardCore;
 import de.minestar.diehard.threads.CheckThread;
 import de.minestar.minestarlibrary.commands.AbstractExtendedCommand;
@@ -36,17 +37,40 @@ public class cmdRestart extends AbstractExtendedCommand {
     private boolean restart(CommandSender sender, String[] args) {
         int minutesUntilRestart;
         if (args.length == 1) {
-            try {
-                minutesUntilRestart = Integer.valueOf(args[0]);
-                DieHardCore.restartCheckThread(minutesUntilRestart);
-                String message = String.format("Server Neustart in %d %s", minutesUntilRestart, minutesUntilRestart == 1 ? "Minute" : "Minuten");
-                ChatUtils.writeInfo(sender, DieHardCore.NAME, message);
-                return true;
-            } catch (Exception e) {
-                ChatUtils.writeError(sender, DieHardCore.NAME, "Argument must be an Integer");
-                return false;
+            if (args[0].contains(":")) {
+                long restartTime = DateTimeHelper.getOnlyTimeLong(args[0]);
+                if (restartTime >= 0) {
+                    DieHardCore.restartCheckThreadWithTimeAsHHmm(restartTime);
+                    String message = String.format("Server Neustart um %s", args[0]);
+                    ChatUtils.writeInfo(sender, DieHardCore.NAME, message);
+                    return true;
+                } else {
+                    String errorMessage;
+                    if (restartTime == -1) {
+                        errorMessage = "Argument must has not format HH:mm";
+                    } else if (restartTime == -2) {
+                        errorMessage = "Argument has invalid time format";
+                    } else {
+                        // should never reach here, but be prepared for future
+                        // return value extensions
+                        errorMessage = "Unknown time conversion exception";
+                    }
+                    ChatUtils.writeError(sender, DieHardCore.NAME, errorMessage);
+                    return false;
+                }
+            } else {
+                try {
+                    minutesUntilRestart = Integer.valueOf(args[0]);
+                    DieHardCore.restartCheckThreadWithTimeInMinutes(minutesUntilRestart);
+                    String message = String.format("Server Neustart in %d %s", minutesUntilRestart, minutesUntilRestart == 1 ? "Minute" : "Minuten");
+                    ChatUtils.writeInfo(sender, DieHardCore.NAME, message);
+                    return true;
+                } catch (Exception e) {
+                    ChatUtils.writeError(sender, DieHardCore.NAME, "Argument must be an Integer");
+                    return false;
+                }
             }
-        } else if (args.length == 1) {
+        } else if (args.length == 0) {
             ChatUtils.writeInfo(sender, DieHardCore.NAME, "Nächster Restart ist angesetzt für " + CheckThread.showNextRestartTime());
             return true;
         } else {

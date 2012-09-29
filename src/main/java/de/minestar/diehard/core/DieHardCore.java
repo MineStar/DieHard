@@ -1,6 +1,8 @@
 package de.minestar.diehard.core;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -43,7 +45,7 @@ public class DieHardCore extends AbstractCore {
         //@formatter:off
         cmdList = new CommandList(NAME,
                 // RESTART COMMAND
-                new cmdRestart("/restart", "[Time in minutes]", "diehard.commands.restart")
+                new cmdRestart("/restart", "[Time in minutes] [Restart time as HH:mm]", "diehard.commands.restart")
             );
             //@formatter:on
         return true;
@@ -54,11 +56,21 @@ public class DieHardCore extends AbstractCore {
         return ticksPerSecond * seconds;
     }
 
-    public static void restartCheckThread(int minutesUntilRestart) {
+    public static void restartCheckThreadWithTimeInMinutes(int minutesUntilRestart) {
         Plugin plugin = Bukkit.getPluginManager().getPlugin(DieHardCore.NAME);
         BukkitScheduler scheduler = Bukkit.getScheduler();
         scheduler.cancelTasks(plugin);
         checkThread = new CheckThread(minutesUntilRestart);
+        scheduler.scheduleAsyncRepeatingTask(plugin, checkThread, secondsToTicks(5), secondsToTicks(60));
+    }
+
+    public static void restartCheckThreadWithTimeAsHHmm(long restartTime) {
+        Plugin plugin = Bukkit.getPluginManager().getPlugin(DieHardCore.NAME);
+        BukkitScheduler scheduler = Bukkit.getScheduler();
+        scheduler.cancelTasks(plugin);
+        List<Long> restartTimes = new ArrayList<Long>();
+        restartTimes.add(restartTime);
+        checkThread = new CheckThread(restartTimes);
         scheduler.scheduleAsyncRepeatingTask(plugin, checkThread, secondsToTicks(5), secondsToTicks(60));
     }
 }
