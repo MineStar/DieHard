@@ -17,11 +17,19 @@ public class DateTimeHelper {
         long hours, minutes;
         // convert times from config file to milliseconds since epoch
         String[] timeFragments = timeText.split(":");
-        hours = Long.parseLong(timeFragments[0]);
-        minutes = Long.parseLong(timeFragments[1]);
+        try {
+            hours = Long.parseLong(timeFragments[0]);
+            minutes = Long.parseLong(timeFragments[1]);
 
-        result = TimeUnit.HOURS.toMillis(hours);
-        result += TimeUnit.MINUTES.toMillis(minutes);
+            if ((hours >= 0) && (hours <= 23) && (minutes >= 0) && (minutes <= 59)) {
+                result = TimeUnit.HOURS.toMillis(hours);
+                result += TimeUnit.MINUTES.toMillis(minutes);
+            } else {
+                result = -2;
+            }
+        } catch (NumberFormatException e) {
+            result = -1;
+        }
         return result;
     }
 
