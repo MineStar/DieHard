@@ -73,8 +73,10 @@ public class CheckThread implements Runnable {
     private static void setNextRestart(int minutesUntilRestart) {
         long nowOnlyTime = DateTimeHelper.getOnlyTime(new Date());
         CheckThread.nextRestartTime = nowOnlyTime + TimeUnit.MINUTES.toMillis(minutesUntilRestart);
-        if (CheckThread.nextRestartTime >= TimeUnit.HOURS.toMillis(24)) {
-            CheckThread.nextRestartTime -= TimeUnit.HOURS.toMillis(24);
+        // remove extra days from nextRestartTime
+        long surplusDays = CheckThread.nextRestartTime / TimeUnit.DAYS.toMillis(1);
+        if (surplusDays > 0) {
+            CheckThread.nextRestartTime -= TimeUnit.DAYS.toMillis(surplusDays);
         }
 
         ChatUtils.writeInfo(Bukkit.getConsoleSender(), DieHardCore.NAME, "Restart Zeit geaendert auf: " + DateTimeHelper.convertMillisToTime(CheckThread.nextRestartTime));
