@@ -113,7 +113,7 @@ public class CheckThread implements Runnable {
             lastWarning = Settings.getLastWarning();
             StopThread stp = new StopThread();
             BukkitScheduler sched = Bukkit.getScheduler();
-            sched.scheduleSyncRepeatingTask(Bukkit.getPluginManager().getPlugin(DieHardCore.NAME), stp, 1, DieHardCore.secondsToTicks(lastWarning));
+            sched.scheduleSyncRepeatingTask(Bukkit.getPluginManager().getPlugin(DieHardCore.NAME), stp, 0, DieHardCore.secondsToTicks(lastWarning));
         }
     }
 }

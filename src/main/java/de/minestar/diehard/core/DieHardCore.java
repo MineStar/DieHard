@@ -31,7 +31,7 @@ public class DieHardCore extends AbstractCore {
     @Override
     protected boolean startThreads(BukkitScheduler scheduler) {
         // start CheckThread with 5 seconds delay and repeat every minute
-        scheduler.scheduleAsyncRepeatingTask(this, checkThread, secondsToTicks(5), secondsToTicks(60));
+        scheduler.scheduleAsyncRepeatingTask(this, checkThread, 0, secondsToTicks(60));
         return true;
     }
 
@@ -61,7 +61,7 @@ public class DieHardCore extends AbstractCore {
         BukkitScheduler scheduler = Bukkit.getScheduler();
         scheduler.cancelTasks(plugin);
         checkThread = new CheckThread(minutesUntilRestart);
-        scheduler.scheduleAsyncRepeatingTask(plugin, checkThread, secondsToTicks(5), secondsToTicks(60));
+        scheduler.scheduleAsyncRepeatingTask(plugin, checkThread, 0, secondsToTicks(60));
     }
 
     public static void restartCheckThreadWithTimeAsHHmm(long restartTime) {
@@ -71,6 +71,6 @@ public class DieHardCore extends AbstractCore {
         List<Long> restartTimes = new ArrayList<Long>();
         restartTimes.add(restartTime);
         checkThread = new CheckThread(restartTimes);
-        scheduler.scheduleAsyncRepeatingTask(plugin, checkThread, secondsToTicks(5), secondsToTicks(60));
+        scheduler.scheduleAsyncRepeatingTask(plugin, checkThread, 0, secondsToTicks(60));
     }
 }
