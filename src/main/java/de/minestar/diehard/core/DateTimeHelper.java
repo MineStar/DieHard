@@ -38,7 +38,6 @@ public class DateTimeHelper {
         if (endtime >= startTime) {
             result = endtime - startTime;
         } else {
-            //
             result = endtime + TimeUnit.DAYS.toMillis(1) - startTime;
         }
         return result;
