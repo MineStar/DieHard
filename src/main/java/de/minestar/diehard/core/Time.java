@@ -45,13 +45,13 @@ public class Time implements Comparable<Time> {
     }
 
     public Time substract(Time t) {
-        int hours = this.hours - t.hours;
-        int minutes = this.minutes - t.minutes;
-        if (minutes < 0) {
-            minutes = 60 + minutes;
-            hours -= 1;
+        int h = this.hours - t.hours;
+        int m = this.minutes - t.minutes;
+        if (m < 0) {
+            m += 60;
+            h -= 1;
         }
-        return new Time(hours, minutes);
+        return new Time(h, m);
     }
 
     public Time add(Time t) {
@@ -61,8 +61,9 @@ public class Time implements Comparable<Time> {
             m -= 60;
             h += 1;
         }
-        System.out.println("hours = " + h);
-        System.out.println("minutes = " + m);
+        if (h > 23) {
+            h -= 24;
+        }
         return new Time(h, m);
     }
 
@@ -144,17 +145,12 @@ public class Time implements Comparable<Time> {
 
     public Time difference(Time t) {
         int result;
-        System.out.println("Difference between me = " + this.toString());
-        System.out.println("and Time t = " + t.toString());
         if (t.isGreater(this)) {
-            System.out.println("Time t is greater");
             Time diff = t.substract(this);
             result = diff.toMinutes();
         } else {
-            System.out.println("Time t is lesser or equal");
             result = t.toMinutes() + (int) TimeUnit.DAYS.toMinutes(1) - this.toMinutes();
         }
-        System.out.println("result = " + result);
         return new Time(result);
     }
 }
