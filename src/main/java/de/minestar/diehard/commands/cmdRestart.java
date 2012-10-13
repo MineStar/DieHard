@@ -4,7 +4,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-import de.minestar.diehard.core.DateTimeHelper;
 import de.minestar.diehard.core.DieHardCore;
 import de.minestar.diehard.core.Time;
 import de.minestar.diehard.threads.CheckThread;
@@ -39,7 +38,7 @@ public class cmdRestart extends AbstractExtendedCommand {
         int minutesUntilRestart;
         if (args.length == 1) {
             if (args[0].contains(":")) {
-                Time restartTime = DateTimeHelper.getOnlyTimeLong(args[0]);
+                Time restartTime = new Time(args[0]);
                 if (restartTime.compareTo(new Time(0, 0)) >= 0) {
                     DieHardCore.restartCheckThreadWithTimeAsHHmm(restartTime);
                     String message = String.format("Server Neustart um %s", args[0]);
@@ -48,8 +47,8 @@ public class cmdRestart extends AbstractExtendedCommand {
                 } else {
                     String errorMessage;
                     if (!restartTime.isValid()) {
-                      //  errorMessage = "Argument must has not format HH:mm";
-                    //} else if (restartTime == -2) {
+                        // errorMessage = "Argument must has not format HH:mm";
+                        // } else if (restartTime == -2) {
                         errorMessage = "Argument has invalid time format";
                     } else {
                         // should never reach here, but be prepared for future

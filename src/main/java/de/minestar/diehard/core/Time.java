@@ -1,5 +1,9 @@
 package de.minestar.diehard.core;
 
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 public class Time implements Comparable<Time> {
     private int hours;
     private int minutes;
@@ -15,17 +19,12 @@ public class Time implements Comparable<Time> {
     }
 
     public Time(String timeText) {
-        String[] timeFragments = timeText.split(":");
-        int hours, minutes;
-        try {
-            hours = Integer.parseInt(timeFragments[0]);
-            minutes = Integer.parseInt(timeFragments[1]);
+        setTime(timeText);
+    }
 
-            setTime(hours, minutes);
-        } catch (NumberFormatException e) {
-            this.hours = -2;
-            this.minutes = -2;
-        }
+    public Time(Date date) {
+        DateFormat df = DateFormat.getTimeInstance();
+        setTime(df.format(date));
     }
 
     public int compareTo(Time t) {
@@ -81,6 +80,20 @@ public class Time implements Comparable<Time> {
         }
     }
 
+    private void setTime(String timeText) {
+        String[] timeFragments = timeText.split(":");
+        int hours, minutes;
+        try {
+            hours = Integer.parseInt(timeFragments[0]);
+            minutes = Integer.parseInt(timeFragments[1]);
+
+            setTime(hours, minutes);
+        } catch (NumberFormatException e) {
+            this.hours = -2;
+            this.minutes = -2;
+        }
+    }
+
     private boolean isValid(int hours, int minutes) {
         if ((hours >= 0) && (hours <= 23) && (minutes >= 0) && (minutes <= 59)) {
             return true;
@@ -107,11 +120,41 @@ public class Time implements Comparable<Time> {
         }
     }
 
+    public boolean isBefore(Time t) {
+        if (this.hours < t.hours) {
+            return true;
+        } else if (this.hours > t.hours) {
+            return false;
+        } else {
+            if (this.minutes < t.minutes) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
     public boolean equals(Time t) {
         if ((this.hours == t.hours) && (this.minutes == t.minutes)) {
             return true;
         } else {
             return false;
         }
+    }
+
+    public Time difference(Time t) {
+        int result;
+        System.out.println("Difference between me = " + this.toString());
+        System.out.println("and Time t = " + t.toString());
+        if (t.isGreater(this)) {
+            System.out.println("Time t is greater");
+            Time diff = t.substract(this);
+            result = diff.toMinutes();
+        } else {
+            System.out.println("Time t is lesser or equal");
+            result = t.toMinutes() + (int) TimeUnit.DAYS.toMinutes(1) - this.toMinutes();
+        }
+        System.out.println("result = " + result);
+        return new Time(result);
     }
 }
