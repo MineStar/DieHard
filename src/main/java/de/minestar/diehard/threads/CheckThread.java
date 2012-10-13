@@ -2,7 +2,6 @@ package de.minestar.diehard.threads;
 
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -10,11 +9,12 @@ import org.bukkit.scheduler.BukkitScheduler;
 import de.minestar.diehard.core.DieHardCore;
 import de.minestar.diehard.core.DateTimeHelper;
 import de.minestar.diehard.core.Settings;
+import de.minestar.diehard.core.Time;
 import de.minestar.minestarlibrary.utils.ConsoleUtils;
 
 public class CheckThread implements Runnable {
-    private static long nextRestartTime;
-    private List<Long> warningTimes;
+    private static Time nextRestartTime;
+    private List<Time> warningTimes;
     private int warningTimesIndex;
 
     private CheckThread() {
@@ -22,7 +22,7 @@ public class CheckThread implements Runnable {
         this.warningTimesIndex = 0;
     }
 
-    public CheckThread(List<Long> restartTimes) {
+    public CheckThread(List<Time> restartTimes) {
         this();
         CheckThread.nextRestartTime = getNextRestartTime(restartTimes);
     }
@@ -33,70 +33,65 @@ public class CheckThread implements Runnable {
     }
 
     public static String showNextRestartTime() {
-        return DateTimeHelper.convertMillisToTime(CheckThread.nextRestartTime);
+        return CheckThread.nextRestartTime.toString();
     }
 
-    private long getNextRestartTime(List<Long> restartTimes) {
+    private Time getNextRestartTime(List<Time> restartTimes) {
         // read current time but remove everything
         // but hours and minutes for compare
-        long nowOnlyTime = DateTimeHelper.getOnlyTime(new Date());
+        Time nowOnlyTime = DateTimeHelper.getOnlyTime(new Date());
 
-        long possibleRestartTime = restartTimes.get(0);
+        Time possibleRestartTime = restartTimes.get(0);
         // search restart times after current time or stick to the first in list
-        for (long date : restartTimes) {
-            if (date > nowOnlyTime) {
+        for (Time date : restartTimes) {
+            if (date.compareTo(nowOnlyTime) > 0) {
                 possibleRestartTime = date;
                 break;
             }
         }
 
-        ConsoleUtils.printInfo(DieHardCore.NAME, "Naechste Restart Zeit: " + DateTimeHelper.convertMillisToTime(possibleRestartTime));
+        ConsoleUtils.printInfo(DieHardCore.NAME, "Naechste Restart Zeit: " + possibleRestartTime.toString());
         return possibleRestartTime;
     }
 
-    private long getNextWarningTime(List<Long> warnTimes, long minutesLeft) {
-        long nextWarnTime;
+    private Time getNextWarningTime(List<Time> warnTimes, Time timeLeft) {
+        Time nextWarnTime;
 
         // find best fitting warning until restart from sorted list
         if (warningTimesIndex < warnTimes.size()) {
-            nextWarnTime = TimeUnit.MILLISECONDS.toMinutes(warnTimes.get(warningTimesIndex));
-            if (nextWarnTime > minutesLeft) {
+            nextWarnTime = warnTimes.get(warningTimesIndex);
+            if (nextWarnTime.compareTo(timeLeft) > 0) {
                 warningTimesIndex++;
-                return getNextWarningTime(warnTimes, minutesLeft);
+                return getNextWarningTime(warnTimes, timeLeft);
             }
         } else {
-            nextWarnTime = 0;
+            nextWarnTime = new Time(0, 0);
         }
         return nextWarnTime;
     }
 
     private static void setNextRestart(int minutesUntilRestart) {
-        long nowOnlyTime = DateTimeHelper.getOnlyTime(new Date());
-        CheckThread.nextRestartTime = nowOnlyTime + TimeUnit.MINUTES.toMillis(minutesUntilRestart);
-        // remove extra days from nextRestartTime
-        long surplusDays = CheckThread.nextRestartTime / TimeUnit.DAYS.toMillis(1);
-        if (surplusDays > 0) {
-            CheckThread.nextRestartTime -= TimeUnit.DAYS.toMillis(surplusDays);
-        }
+        Time nowOnlyTime = DateTimeHelper.getOnlyTime(new Date());
+        CheckThread.nextRestartTime = nowOnlyTime.add(new Time(minutesUntilRestart));
 
-        ConsoleUtils.printInfo(DieHardCore.NAME, "Restart Zeit geaendert auf: " + DateTimeHelper.convertMillisToTime(CheckThread.nextRestartTime));
+        ConsoleUtils.printInfo(DieHardCore.NAME, "Restart Zeit geaendert auf: " + CheckThread.nextRestartTime.toString());
     }
 
     @Override
     public void run() {
         int lastWarning;
-        long nextWarnTime;
+        Time nextWarnTime;
         // current time as milliseconds since epoch for compare
-        long nowOnlyTime = DateTimeHelper.getOnlyTime(new Date());
+        Time nowOnlyTime = DateTimeHelper.getOnlyTime(new Date());
 
-        long diff = TimeUnit.MILLISECONDS.toMinutes(DateTimeHelper.getTimeDifference(nowOnlyTime, nextRestartTime));
+        Time diff = DateTimeHelper.getTimeDifference(nowOnlyTime, nextRestartTime);
         nextWarnTime = getNextWarningTime(warningTimes, diff);
 
-        if (diff > 0) {
-            if (diff == nextWarnTime) {
+        if (diff.isGreater(new Time(0, 0))) {
+            if (diff.equals(nextWarnTime)) {
                 // remaining time until restart equals next warning time
                 // --> broadcast message to players
-                MessageThread msg = new MessageThread(nextWarnTime);
+                MessageThread msg = new MessageThread(nextWarnTime.toMinutes());
                 BukkitScheduler sched = Bukkit.getScheduler();
                 sched.scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin(DieHardCore.NAME), msg, 1);
             }

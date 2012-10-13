@@ -64,11 +64,11 @@ public class DieHardCore extends AbstractCore {
         scheduler.scheduleAsyncRepeatingTask(plugin, checkThread, 0, secondsToTicks(60));
     }
 
-    public static void restartCheckThreadWithTimeAsHHmm(long restartTime) {
+    public static void restartCheckThreadWithTimeAsHHmm(Time restartTime) {
         Plugin plugin = Bukkit.getPluginManager().getPlugin(DieHardCore.NAME);
         BukkitScheduler scheduler = Bukkit.getScheduler();
         scheduler.cancelTasks(plugin);
-        List<Long> restartTimes = new ArrayList<Long>();
+        List<Time> restartTimes = new ArrayList<Time>();
         restartTimes.add(restartTime);
         checkThread = new CheckThread(restartTimes);
         scheduler.scheduleAsyncRepeatingTask(plugin, checkThread, 0, secondsToTicks(60));

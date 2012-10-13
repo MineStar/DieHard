@@ -12,8 +12,8 @@ public class Settings {
 
     /* VALUES */
 
-    private static List<Long> restartTimes;
-    private static List<Long> warningTimes;
+    private static List<Time> restartTimes;
+    private static List<Time> warningTimes;
     private static int lastWarning;
 
     /* USED FOR SETTING */
@@ -52,11 +52,12 @@ public class Settings {
     private static void loadRestartTimes() {
         List<String> listRestartTimeText = config.getStringList("Restart Times");
 
-        restartTimes = new ArrayList<Long>();
+        restartTimes = new ArrayList<Time>();
         ConsoleUtils.printInfo(DieHardCore.NAME, "Restart Times:");
-        for (String time : listRestartTimeText) {
-            ConsoleUtils.printInfo(DieHardCore.NAME, time);
-            restartTimes.add(DateTimeHelper.getOnlyTimeLong(time));
+        for (String timeText : listRestartTimeText) {
+            ConsoleUtils.printInfo(DieHardCore.NAME, timeText);
+            Time time = new Time(timeText);
+            restartTimes.add(time);
         }
         Collections.sort(restartTimes);
     }
@@ -64,11 +65,12 @@ public class Settings {
     private static void loadWarningTimes() {
         List<String> listWarningTimeText = config.getStringList("Warning Times");
 
-        warningTimes = new ArrayList<Long>();
+        warningTimes = new ArrayList<Time>();
         ConsoleUtils.printInfo(DieHardCore.NAME, "Warning Times:");
-        for (String time : listWarningTimeText) {
-            ConsoleUtils.printInfo(DieHardCore.NAME, time);
-            warningTimes.add(DateTimeHelper.getOnlyTimeLong(time));
+        for (String timeText : listWarningTimeText) {
+            ConsoleUtils.printInfo(DieHardCore.NAME, timeText);
+            Time time = new Time(timeText);
+            warningTimes.add(time);
         }
         Collections.sort(warningTimes, Collections.reverseOrder());
     }
@@ -78,11 +80,11 @@ public class Settings {
         ConsoleUtils.printInfo(DieHardCore.NAME, "LastWarning: " + lastWarning);
     }
 
-    public static List<Long> getRestartTimes() {
+    public static List<Time> getRestartTimes() {
         return restartTimes;
     }
 
-    public static List<Long> getWarningTimes() {
+    public static List<Time> getWarningTimes() {
         return warningTimes;
     }
 

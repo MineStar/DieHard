@@ -5,42 +5,25 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class DateTimeHelper {
-    public static long getOnlyTime(Date date) {
+    public static Time getOnlyTime(Date date) {
         // retrieve only time part and return as milliseconds sind epoch
         DateFormat df = DateFormat.getTimeInstance();
-        String textTime = df.format(date);
-        return getOnlyTimeLong(textTime);
+        return new Time(df.format(date));
     }
 
-    public static long getOnlyTimeLong(String timeText) {
-        long result;
-        long hours, minutes;
-        // convert times from config file to milliseconds since epoch
-        String[] timeFragments = timeText.split(":");
-        try {
-            hours = Long.parseLong(timeFragments[0]);
-            minutes = Long.parseLong(timeFragments[1]);
-
-            if ((hours >= 0) && (hours <= 23) && (minutes >= 0) && (minutes <= 59)) {
-                result = TimeUnit.HOURS.toMillis(hours);
-                result += TimeUnit.MINUTES.toMillis(minutes);
-            } else {
-                result = -2;
-            }
-        } catch (NumberFormatException e) {
-            result = -1;
-        }
-        return result;
+    public static Time getOnlyTimeLong(String timeText) {
+        return new Time(timeText);
     }
 
-    public static long getTimeDifference(long startTime, long endtime) {
-        long result;
-        if (endtime >= startTime) {
-            result = endtime - startTime;
+    public static Time getTimeDifference(Time startTime, Time endTime) {
+        int result;
+        if (endTime.compareTo(startTime) >= 0) {
+            Time t = endTime.substract(startTime);
+            result = t.toMinutes();
         } else {
-            result = endtime + TimeUnit.DAYS.toMillis(1) - startTime;
+            result = endTime.toMinutes() + (int) TimeUnit.DAYS.toMinutes(1) - startTime.toMinutes();
         }
-        return result;
+        return new Time(result);
     }
 
     public static String convertMillisToTime(long millis) {
