@@ -94,14 +94,6 @@ public class CheckThread implements Runnable {
                 BukkitScheduler sched = Bukkit.getScheduler();
                 sched.scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin(DieHardCore.NAME), msg, 1);
             }
-            // TODO Fix possible error of skipping restart time
-            // it's possible that restart is skipped due to high server
-            // load shortly before restrat should take place
-            // e.g. server restart is set to 10:00 and Checkthread runs at 59
-            // seconds of minute. High server load could lead to CheckThread run
-            // being delayed to next second. That means current time is 10:01
-            // and diff is the time until 10:00 of the next day.
-            // This should only be a rare case.
         } else {
             // initiate server restart
             lastWarning = Settings.getLastWarning();
