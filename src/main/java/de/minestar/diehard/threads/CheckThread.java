@@ -46,7 +46,7 @@ public class CheckThread implements Runnable {
         Time possibleRestartTime = restartTimes.get(0);
         // search restart times after current time or stick to the first in list
         for (Time date : restartTimes) {
-            if (date.compareTo(now) > 0) {
+            if (date.isAfter(now)) {
                 possibleRestartTime = date;
                 break;
             }
@@ -62,12 +62,12 @@ public class CheckThread implements Runnable {
         // find best fitting warning until restart from sorted list
         if (warningTimesIndex < warnTimes.size()) {
             nextWarnTime = warnTimes.get(warningTimesIndex);
-            if (nextWarnTime.compareTo(timeLeft) > 0) {
+            if (nextWarnTime.isAfter(timeLeft)) {
                 warningTimesIndex++;
                 return getNextWarningTime(warnTimes, timeLeft);
             }
         } else {
-            nextWarnTime = new Time(0, 0);
+            nextWarnTime = new Time();
         }
         return nextWarnTime;
     }

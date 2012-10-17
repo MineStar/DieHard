@@ -8,6 +8,10 @@ public class Time implements Comparable<Time> {
     private int hours;
     private int minutes;
 
+    public Time() {
+        setTime(0, 0);
+    }
+
     public Time(int h, int m) {
         setTime(h, m);
     }
@@ -27,6 +31,7 @@ public class Time implements Comparable<Time> {
         setTime(df.format(date));
     }
 
+    @Override
     public int compareTo(Time t) {
         if (this.hours == t.hours) {
             if (this.minutes == t.minutes) {
@@ -107,7 +112,7 @@ public class Time implements Comparable<Time> {
         return this.isValid(this.hours, this.minutes);
     }
 
-    public boolean isGreater(Time t) {
+    public boolean isAfter(Time t) {
         if (this.hours > t.hours) {
             return true;
         } else if (this.hours < t.hours) {
@@ -145,7 +150,7 @@ public class Time implements Comparable<Time> {
 
     public Time difference(Time t) {
         int result;
-        if (t.isGreater(this)) {
+        if (t.isAfter(this)) {
             Time diff = t.substract(this);
             result = diff.toMinutes();
         } else {

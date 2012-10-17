@@ -26,6 +26,7 @@ public class cmdRestart extends AbstractExtendedCommand {
      * @param split
      */
     public void execute(String[] args, Player player) {
+        // UtilPermissions.playerCanUseCommand(player, string)
         restart(player, args);
     }
 
@@ -39,7 +40,7 @@ public class cmdRestart extends AbstractExtendedCommand {
         if (args.length == 1) {
             if (args[0].contains(":")) {
                 Time restartTime = new Time(args[0]);
-                if (restartTime.compareTo(new Time(0, 0)) >= 0) {
+                if (restartTime.compareTo(new Time()) >= 0) {
                     DieHardCore.restartCheckThreadWithTimeAsHHmm(restartTime);
                     String message = String.format("Server Neustart um %s", args[0]);
                     ChatUtils.writeInfo(sender, DieHardCore.NAME, message);
