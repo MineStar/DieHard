@@ -4,6 +4,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
+import com.bukkit.gemo.utils.UtilPermissions;
+
 import de.minestar.diehard.core.DieHardCore;
 import de.minestar.diehard.core.Time;
 import de.minestar.diehard.threads.CheckThread;
@@ -26,8 +28,15 @@ public class cmdRestart extends AbstractExtendedCommand {
      * @param split
      */
     public void execute(String[] args, Player player) {
-        // UtilPermissions.playerCanUseCommand(player, string)
-        restart(player, args);
+        if (args.length == 0) {
+            // No parameters: show next restart time
+            ChatUtils.writeInfo(player, pluginName, "Nächster Restart ist angesetzt für " + CheckThread.showNextRestartTime());
+        } else if (UtilPermissions.playerCanUseCommand(player, "diehard.commands.restart")) {
+            restart(player, args);
+        } else {
+            // Insufficient permissions
+            ChatUtils.writeError(player, pluginName, "You are not allowed to use this command.");
+        }
     }
 
     @Override
@@ -43,7 +52,7 @@ public class cmdRestart extends AbstractExtendedCommand {
                 if (restartTime.compareTo(new Time()) >= 0) {
                     DieHardCore.restartCheckThreadWithTimeAsHHmm(restartTime);
                     String message = String.format("Server Neustart um %s", args[0]);
-                    ChatUtils.writeInfo(sender, DieHardCore.NAME, message);
+                    ChatUtils.writeInfo(sender, pluginName, message);
                     return true;
                 } else {
                     String errorMessage;
@@ -56,7 +65,7 @@ public class cmdRestart extends AbstractExtendedCommand {
                         // return value extensions
                         errorMessage = "Unknown time conversion exception";
                     }
-                    ChatUtils.writeError(sender, DieHardCore.NAME, errorMessage);
+                    ChatUtils.writeError(sender, pluginName, errorMessage);
                     return false;
                 }
             } else {
@@ -64,18 +73,18 @@ public class cmdRestart extends AbstractExtendedCommand {
                     minutesUntilRestart = Integer.valueOf(args[0]);
                     DieHardCore.restartCheckThreadWithTimeInMinutes(minutesUntilRestart);
                     String message = String.format("Server Neustart in %d %s", minutesUntilRestart, minutesUntilRestart == 1 ? "Minute" : "Minuten");
-                    ChatUtils.writeInfo(sender, DieHardCore.NAME, message);
+                    ChatUtils.writeInfo(sender, pluginName, message);
                     return true;
                 } catch (Exception e) {
-                    ChatUtils.writeError(sender, DieHardCore.NAME, "Argument must be an Integer");
+                    ChatUtils.writeError(sender, pluginName, "Argument must be an Integer");
                     return false;
                 }
             }
         } else if (args.length == 0) {
-            ChatUtils.writeInfo(sender, DieHardCore.NAME, "Nächster Restart ist angesetzt für " + CheckThread.showNextRestartTime());
+            ChatUtils.writeInfo(sender, pluginName, "Nächster Restart ist angesetzt für " + CheckThread.showNextRestartTime());
             return true;
         } else {
-            ChatUtils.writeError(sender, DieHardCore.NAME, "Ungültige Anzahl an Argumenten");
+            ChatUtils.writeError(sender, pluginName, "Ungültige Anzahl an Argumenten");
             return false;
         }
     }

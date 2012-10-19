@@ -13,6 +13,7 @@ import de.minestar.minestarlibrary.utils.ConsoleUtils;
 
 public class CheckThread implements Runnable {
     private static int minutesUntilRestart;
+    private static String nextRestartTime;
     private List<Time> warningTimes;
     private int warningTimesIndex;
 
@@ -26,6 +27,7 @@ public class CheckThread implements Runnable {
         Time nextRestartTime = getNextRestartTime(restartTimes);
         Time now = new Time(new Date());
         CheckThread.minutesUntilRestart = now.difference(nextRestartTime).toMinutes();
+        CheckThread.nextRestartTime = now.add(new Time(CheckThread.minutesUntilRestart)).toString();
     }
 
     public CheckThread(int minutesUntilRestart) {
@@ -34,8 +36,7 @@ public class CheckThread implements Runnable {
     }
 
     public static String showNextRestartTime() {
-        Time now = new Time(new Date());
-        return now.add(new Time(CheckThread.minutesUntilRestart)).toString();
+        return CheckThread.nextRestartTime;
     }
 
     private Time getNextRestartTime(List<Time> restartTimes) {
@@ -75,7 +76,7 @@ public class CheckThread implements Runnable {
     private static void setNextRestart(int minutesUntilRestart) {
         Time now = new Time(new Date());
         CheckThread.minutesUntilRestart = minutesUntilRestart;
-
+        CheckThread.nextRestartTime = now.add(new Time(CheckThread.minutesUntilRestart)).toString();
         ConsoleUtils.printInfo(DieHardCore.NAME, "Restart Zeit geaendert auf: " + now.add(new Time(minutesUntilRestart)).toString());
     }
 
@@ -101,6 +102,7 @@ public class CheckThread implements Runnable {
             BukkitScheduler sched = Bukkit.getScheduler();
             sched.scheduleSyncRepeatingTask(Bukkit.getPluginManager().getPlugin(DieHardCore.NAME), stp, 0, DieHardCore.secondsToTicks(lastWarning));
         }
-        CheckThread.minutesUntilRestart--;
+        Time now = new Time(new Date());
+        CheckThread.nextRestartTime = now.add(new Time(CheckThread.minutesUntilRestart--)).toString();
     }
 }

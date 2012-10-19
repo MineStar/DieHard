@@ -45,7 +45,7 @@ public class DieHardCore extends AbstractCore {
         //@formatter:off
         cmdList = new CommandList(NAME,
                 // RESTART COMMAND
-                new cmdRestart("/restart", "[Time in minutes] [Restart time as HH:mm]", "diehard.commands.restart")
+                new cmdRestart("/restart", "", "")
             );
             //@formatter:on
         return true;
