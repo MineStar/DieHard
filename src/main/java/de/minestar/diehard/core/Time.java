@@ -9,26 +9,26 @@ public class Time implements Comparable<Time> {
     private int minutes;
 
     public Time() {
-        setTime(0, 0);
+        this.setTime(0, 0);
     }
 
     public Time(int h, int m) {
-        setTime(h, m);
+        this.setTime(h, m);
     }
 
     public Time(int m) {
         int h = m / 60;
         m %= 60;
-        setTime(h, m);
+        this.setTime(h, m);
     }
 
     public Time(String timeText) {
-        setTime(timeText);
+        this.setTime(timeText);
     }
 
     public Time(Date date) {
         DateFormat df = DateFormat.getTimeInstance();
-        setTime(df.format(date));
+        this.setTime(df.format(date));
     }
 
     @Override

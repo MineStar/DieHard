@@ -22,73 +22,73 @@ public class Settings {
     private static File configFile;
 
     public static boolean init(File dataFolder, String pluginName, String pluginVersion) {
-        configFile = new File(dataFolder, "config.yml");
+        Settings.configFile = new File(dataFolder, "config.yml");
         try {
             // LOAD EXISTING CONFIG FILE
-            if (configFile.exists()) {
-                config = new MinestarConfig(configFile, pluginName, pluginVersion);
+            if (Settings.configFile.exists()) {
+                Settings.config = new MinestarConfig(Settings.configFile, pluginName, pluginVersion);
                 // CREATE A DEFAUL ONE
             } else {
-                config = MinestarConfig.copyDefault(Settings.class.getResourceAsStream("/config.yml"), configFile);
+                Settings.config = MinestarConfig.copyDefault(Settings.class.getResourceAsStream("/config.yml"), Settings.configFile);
             }
-            loadValues();
+            Settings.loadValues();
             return true;
 
         } catch (Exception e) {
-            ConsoleUtils.printException(e, pluginName, "Can't load the settings from " + configFile);
+            ConsoleUtils.printException(e, pluginName, "Can't load the settings from " + Settings.configFile);
             return false;
         }
     }
 
     private static void loadValues() {
         /* Restart times */
-        loadRestartTimes();
+        Settings.loadRestartTimes();
         /* Warning times */
-        loadWarningTimes();
+        Settings.loadWarningTimes();
         /* Last warning time */
-        loadLastWarning();
+        Settings.loadLastWarning();
     }
 
     private static void loadRestartTimes() {
-        List<String> listRestartTimeText = config.getStringList("Restart Times");
+        List<String> listRestartTimeText = Settings.config.getStringList("Restart Times");
 
-        restartTimes = new ArrayList<Time>();
+        Settings.restartTimes = new ArrayList<Time>();
         ConsoleUtils.printInfo(DieHardCore.NAME, "Restart Times:");
         for (String timeText : listRestartTimeText) {
             ConsoleUtils.printInfo(DieHardCore.NAME, timeText);
             Time time = new Time(timeText);
-            restartTimes.add(time);
+            Settings.restartTimes.add(time);
         }
-        Collections.sort(restartTimes);
+        Collections.sort(Settings.restartTimes);
     }
 
     private static void loadWarningTimes() {
-        List<String> listWarningTimeText = config.getStringList("Warning Times");
+        List<String> listWarningTimeText = Settings.config.getStringList("Warning Times");
 
-        warningTimes = new ArrayList<Time>();
+        Settings.warningTimes = new ArrayList<Time>();
         ConsoleUtils.printInfo(DieHardCore.NAME, "Warning Times:");
         for (String timeText : listWarningTimeText) {
             ConsoleUtils.printInfo(DieHardCore.NAME, timeText);
             Time time = new Time(timeText);
-            warningTimes.add(time);
+            Settings.warningTimes.add(time);
         }
-        Collections.sort(warningTimes, Collections.reverseOrder());
+        Collections.sort(Settings.warningTimes, Collections.reverseOrder());
     }
 
     private static void loadLastWarning() {
-        lastWarning = config.getInt("Last Warning");
-        ConsoleUtils.printInfo(DieHardCore.NAME, "LastWarning: " + lastWarning);
+        Settings.lastWarning = Settings.config.getInt("Last Warning");
+        ConsoleUtils.printInfo(DieHardCore.NAME, "LastWarning: " + Settings.lastWarning);
     }
 
     public static List<Time> getRestartTimes() {
-        return restartTimes;
+        return Settings.restartTimes;
     }
 
     public static List<Time> getWarningTimes() {
-        return warningTimes;
+        return Settings.warningTimes;
     }
 
     public static int getLastWarning() {
-        return lastWarning;
+        return Settings.lastWarning;
     }
 }

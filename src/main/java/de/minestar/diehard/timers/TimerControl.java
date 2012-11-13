@@ -18,10 +18,10 @@ public class TimerControl {
     private static int minutesUntilRestart;
 
     public void cancelTimers() {
-        for (Timer timer : timers) {
+        for (Timer timer : TimerControl.timers) {
             timer.cancel();
         }
-        timers.clear();
+        TimerControl.timers.clear();
     }
 
     public TimerControl(int minutes) {
@@ -38,23 +38,23 @@ public class TimerControl {
         TimerControl.minutesUntilRestart = now.difference(nextRestartTime).toMinutes();
         TimerControl.nextRestartTime = now.add(new Time(TimerControl.minutesUntilRestart)).toString();
 
-        startTimers();
+        this.startTimers();
     }
-    
+
     private void startTimers() {
         Timer restartTimer = new Timer();
-        restartTimer.schedule(new RestartTimer(), TimeUnit.MINUTES.toMillis(minutesUntilRestart), TimeUnit.SECONDS.toMillis(Settings.getLastWarning()));
-        timers.add(restartTimer);
+        restartTimer.schedule(new RestartTimer(), TimeUnit.MINUTES.toMillis(TimerControl.minutesUntilRestart), TimeUnit.SECONDS.toMillis(Settings.getLastWarning()));
+        TimerControl.timers.add(restartTimer);
 
         for (Time warnTime : Settings.getWarningTimes()) {
             int warnTimeMinutes = warnTime.toMinutes();
-            if ((warnTimeMinutes > 0) && (warnTimeMinutes <= minutesUntilRestart)) {
+            if ((warnTimeMinutes > 0) && (warnTimeMinutes <= TimerControl.minutesUntilRestart)) {
                 Timer warningTimer = new Timer();
                 // Warn Time Verzögerung in Abhängigkeit von restart Zeit
                 // festlegen
-                int difference = minutesUntilRestart - warnTimeMinutes;
+                int difference = TimerControl.minutesUntilRestart - warnTimeMinutes;
                 warningTimer.schedule(new WarningTimer(warnTimeMinutes), TimeUnit.MINUTES.toMillis(difference));
-                timers.add(warningTimer);
+                TimerControl.timers.add(warningTimer);
             }
         }
     }

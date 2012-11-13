@@ -57,12 +57,8 @@ public class cmdRestart extends AbstractExtendedCommand {
                 } else {
                     String errorMessage;
                     if (!restartTime.isValid()) {
-                        // errorMessage = "Argument must has not format HH:mm";
-                        // } else if (restartTime == -2) {
                         errorMessage = "Argument has invalid time format";
                     } else {
-                        // should never reach here, but be prepared for future
-                        // return value extensions
                         errorMessage = "Unknown time conversion exception";
                     }
                     ChatUtils.writeError(sender, pluginName, errorMessage);

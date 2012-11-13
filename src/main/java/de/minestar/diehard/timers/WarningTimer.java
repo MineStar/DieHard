@@ -9,7 +9,7 @@ import de.minestar.diehard.core.DieHardCore;
 
 public class WarningTimer extends TimerTask {
     private int warnTime;
-    
+
     public WarningTimer(int warnTime) {
         this.warnTime = warnTime;
     }

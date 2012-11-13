@@ -33,22 +33,17 @@ public class DieHardCore extends AbstractCore {
             //@formatter:on
         return true;
     }
-    
+
     @Override
     protected boolean commonEnable() {
         timerControl = new TimerControl(Settings.getRestartTimes(), Settings.getWarningTimes());
         return true;
     }
-    
+
     @Override
     protected boolean commonDisable() {
         timerControl.cancelTimers();
         return true;
-    }
-
-    public static int secondsToTicks(int seconds) {
-        int ticksPerSecond = 20;
-        return ticksPerSecond * seconds;
     }
 
     public static void restartCheckThreadWithTimeInMinutes(int minutesUntilRestart) {
