@@ -1,4 +1,6 @@
-package de.minestar.diehard.threads;
+package de.minestar.diehard.timers;
+
+import java.util.TimerTask;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -6,12 +8,11 @@ import org.bukkit.World;
 
 import de.minestar.diehard.core.DieHardCore;
 
-public class StopThread implements Runnable {
+public class RestartTimer extends TimerTask {
     private static boolean messageShown = false;
-
-    @Override
+    
     public void run() {
-        // Thread will run twice
+     // Thread will run twice
         // first time to broadcast a final warning
         // second time to safely stop the server
         if (!messageShown) {

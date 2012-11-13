@@ -4,35 +4,18 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitScheduler;
-
 import de.minestar.diehard.commands.cmdRestart;
-import de.minestar.diehard.threads.CheckThread;
+import de.minestar.diehard.timers.TimerControl;
 import de.minestar.minestarlibrary.AbstractCore;
 import de.minestar.minestarlibrary.commands.CommandList;
 
 public class DieHardCore extends AbstractCore {
     public static final String NAME = "DieHard";
 
-    private static CheckThread checkThread;
+    private static TimerControl timerControl;
 
     public DieHardCore() {
         super(NAME);
-    }
-
-    @Override
-    protected boolean createThreads() {
-        checkThread = new CheckThread(Settings.getRestartTimes());
-        return true;
-    }
-
-    @Override
-    protected boolean startThreads(BukkitScheduler scheduler) {
-        // start CheckThread with 5 seconds delay and repeat every minute
-        scheduler.scheduleAsyncRepeatingTask(this, checkThread, 0, secondsToTicks(60));
-        return true;
     }
 
     @Override
@@ -50,6 +33,18 @@ public class DieHardCore extends AbstractCore {
             //@formatter:on
         return true;
     }
+    
+    @Override
+    protected boolean commonEnable() {
+        timerControl = new TimerControl(Settings.getRestartTimes(), Settings.getWarningTimes());
+        return true;
+    }
+    
+    @Override
+    protected boolean commonDisable() {
+        timerControl.cancelTimers();
+        return true;
+    }
 
     public static int secondsToTicks(int seconds) {
         int ticksPerSecond = 20;
@@ -57,20 +52,14 @@ public class DieHardCore extends AbstractCore {
     }
 
     public static void restartCheckThreadWithTimeInMinutes(int minutesUntilRestart) {
-        Plugin plugin = Bukkit.getPluginManager().getPlugin(DieHardCore.NAME);
-        BukkitScheduler scheduler = Bukkit.getScheduler();
-        scheduler.cancelTasks(plugin);
-        checkThread = new CheckThread(minutesUntilRestart);
-        scheduler.scheduleAsyncRepeatingTask(plugin, checkThread, 0, secondsToTicks(60));
+        timerControl.cancelTimers();
+        timerControl = new TimerControl(minutesUntilRestart);
     }
 
     public static void restartCheckThreadWithTimeAsHHmm(Time restartTime) {
-        Plugin plugin = Bukkit.getPluginManager().getPlugin(DieHardCore.NAME);
-        BukkitScheduler scheduler = Bukkit.getScheduler();
-        scheduler.cancelTasks(plugin);
         List<Time> restartTimes = new ArrayList<Time>();
         restartTimes.add(restartTime);
-        checkThread = new CheckThread(restartTimes);
-        scheduler.scheduleAsyncRepeatingTask(plugin, checkThread, 0, secondsToTicks(60));
+        timerControl.cancelTimers();
+        timerControl = new TimerControl(restartTimes, Settings.getWarningTimes());
     }
 }

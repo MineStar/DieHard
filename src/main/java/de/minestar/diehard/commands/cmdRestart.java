@@ -8,7 +8,7 @@ import com.bukkit.gemo.utils.UtilPermissions;
 
 import de.minestar.diehard.core.DieHardCore;
 import de.minestar.diehard.core.Time;
-import de.minestar.diehard.threads.CheckThread;
+import de.minestar.diehard.timers.TimerControl;
 import de.minestar.minestarlibrary.commands.AbstractExtendedCommand;
 import de.minestar.minestarlibrary.utils.ChatUtils;
 
@@ -30,7 +30,7 @@ public class cmdRestart extends AbstractExtendedCommand {
     public void execute(String[] args, Player player) {
         if (args.length == 0) {
             // No parameters: show next restart time
-            ChatUtils.writeInfo(player, pluginName, "Nächster Restart ist angesetzt für " + CheckThread.showNextRestartTime());
+            ChatUtils.writeInfo(player, pluginName, "Nächster Restart ist angesetzt für " + TimerControl.showNextRestartTime());
         } else if (UtilPermissions.playerCanUseCommand(player, "diehard.commands.restart")) {
             restart(player, args);
         } else {
@@ -81,7 +81,7 @@ public class cmdRestart extends AbstractExtendedCommand {
                 }
             }
         } else if (args.length == 0) {
-            ChatUtils.writeInfo(sender, pluginName, "Nächster Restart ist angesetzt für " + CheckThread.showNextRestartTime());
+            ChatUtils.writeInfo(sender, pluginName, "Nächster Restart ist angesetzt für " + TimerControl.showNextRestartTime());
             return true;
         } else {
             ChatUtils.writeError(sender, pluginName, "Ungültige Anzahl an Argumenten");
