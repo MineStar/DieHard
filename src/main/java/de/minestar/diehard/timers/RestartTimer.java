@@ -16,7 +16,7 @@ public class RestartTimer extends TimerTask {
         // first time to broadcast a final warning
         // second time to safely stop the server
         if (!RestartTimer.messageShown) {
-            String message = String.format("[%s] Yippie-Ya-Yeah Schweinebacke!", DieHardCore.NAME);
+            String message = String.format(ChatColor.AQUA + "[%s]" + ChatColor.RED + " Yippie-Ya-Yeah Schweinebacke!", DieHardCore.NAME);
             Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + message);
             RestartTimer.messageShown = true;
         } else {

@@ -15,7 +15,7 @@ public class WarningTimer extends TimerTask {
     }
 
     public void run() {
-        String message = String.format("[%s] ACHTUNG !!! Der Server wird in %d Minute%s neu gestartet!", DieHardCore.NAME, this.warnTime, this.warnTime > 1 ? "n" : "");
-        Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + message);
+        String message = String.format(ChatColor.AQUA + "[%s]" + ChatColor.RED + " ACHTUNG !!! Der Server wird in %d Minute%s neu gestartet!", DieHardCore.NAME, this.warnTime, this.warnTime > 1 ? "n" : "");
+        Bukkit.broadcastMessage(message);
     }
 }
