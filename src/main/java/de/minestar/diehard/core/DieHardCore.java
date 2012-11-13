@@ -36,22 +36,26 @@ public class DieHardCore extends AbstractCore {
 
     @Override
     protected boolean commonEnable() {
+        // create TimerControl which creates all necessary timers
         timerControl = new TimerControl(Settings.getRestartTimes(), Settings.getWarningTimes());
         return true;
     }
 
     @Override
     protected boolean commonDisable() {
+        // Cancel all active timer on plugin disable
         timerControl.cancelTimers();
         return true;
     }
 
     public static void restartCheckThreadWithTimeInMinutes(int minutesUntilRestart) {
+        // reload timer with minutes until restart
         timerControl.cancelTimers();
         timerControl = new TimerControl(minutesUntilRestart);
     }
 
     public static void restartCheckThreadWithTimeAsHHmm(Time restartTime) {
+        // restart timers with given restart time
         List<Time> restartTimes = new ArrayList<Time>();
         restartTimes.add(restartTime);
         timerControl.cancelTimers();

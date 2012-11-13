@@ -50,6 +50,7 @@ public class Settings {
     }
 
     private static void loadRestartTimes() {
+        // read all restart times from config and convert them to own Time class
         List<String> listRestartTimeText = Settings.config.getStringList("Restart Times");
 
         Settings.restartTimes = new ArrayList<Time>();
@@ -63,6 +64,7 @@ public class Settings {
     }
 
     private static void loadWarningTimes() {
+        // read all warning times from config and convert them to own Time class
         List<String> listWarningTimeText = Settings.config.getStringList("Warning Times");
 
         Settings.warningTimes = new ArrayList<Time>();
@@ -76,6 +78,7 @@ public class Settings {
     }
 
     private static void loadLastWarning() {
+        // load delay time between shutdown message an actual shutdown
         Settings.lastWarning = Settings.config.getInt("Last Warning");
         ConsoleUtils.printInfo(DieHardCore.NAME, "LastWarning: " + Settings.lastWarning);
     }

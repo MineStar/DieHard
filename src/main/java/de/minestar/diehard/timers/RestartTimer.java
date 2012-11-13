@@ -12,7 +12,7 @@ public class RestartTimer extends TimerTask {
     private static boolean messageShown = false;
 
     public void run() {
-        // Thread will run twice
+        // Timer will run twice
         // first time to broadcast a final warning
         // second time to safely stop the server
         if (!RestartTimer.messageShown) {

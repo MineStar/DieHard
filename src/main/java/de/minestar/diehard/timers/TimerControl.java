@@ -25,6 +25,7 @@ public class TimerControl {
     }
 
     public TimerControl(int minutes) {
+        // init Timers for restart in given minutes
         TimerControl.minutesUntilRestart = minutes;
         Time now = new Time(new Date());
         TimerControl.nextRestartTime = now.add(new Time(TimerControl.minutesUntilRestart)).toString();
@@ -33,6 +34,7 @@ public class TimerControl {
     }
 
     public TimerControl(List<Time> restartTimes, List<Time> warningTimes) {
+        // init Timers from given settings value
         Time nextRestartTime = getNextRestartTime(restartTimes);
         Time now = new Time(new Date());
         TimerControl.minutesUntilRestart = now.difference(nextRestartTime).toMinutes();
@@ -42,10 +44,12 @@ public class TimerControl {
     }
 
     private void startTimers() {
+        // start restart Timer
         Timer restartTimer = new Timer();
         restartTimer.schedule(new RestartTimer(), TimeUnit.MINUTES.toMillis(TimerControl.minutesUntilRestart), TimeUnit.SECONDS.toMillis(Settings.getLastWarning()));
         TimerControl.timers.add(restartTimer);
 
+        // start all warning timers
         for (Time warnTime : Settings.getWarningTimes()) {
             int warnTimeMinutes = warnTime.toMinutes();
             if ((warnTimeMinutes > 0) && (warnTimeMinutes <= TimerControl.minutesUntilRestart)) {

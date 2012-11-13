@@ -49,7 +49,9 @@ public class cmdRestart extends AbstractExtendedCommand {
     private boolean restart(CommandSender sender, String[] args) {
         int minutesUntilRestart;
         String message;
+        // command has an argument
         if (args.length == 1) {
+            // argument seems to have format HH:mm
             if (args[0].contains(":")) {
                 Time restartTime = new Time(args[0]);
                 if (restartTime.compareTo(new Time()) >= 0) {
@@ -58,6 +60,7 @@ public class cmdRestart extends AbstractExtendedCommand {
                     ChatUtils.writeInfo(sender, pluginName, message);
                     return true;
                 } else {
+                    // argument was not in format HH:mm
                     String errorMessage;
                     if (!restartTime.isValid()) {
                         errorMessage = "Argument has invalid time format";
@@ -68,30 +71,38 @@ public class cmdRestart extends AbstractExtendedCommand {
                     return false;
                 }
             } else {
+                // argument is something different than HH:mm
                 try {
+                    // try to get number from argument
                     minutesUntilRestart = Integer.valueOf(args[0]);
                     DieHardCore.restartCheckThreadWithTimeInMinutes(minutesUntilRestart);
                     message = String.format("Server Neustart in %d %s", minutesUntilRestart, minutesUntilRestart == 1 ? "Minute" : "Minuten");
                     ChatUtils.writeInfo(sender, pluginName, message);
                     return true;
                 } catch (Exception e) {
+                    // argument is not a number
                     if (args[0].equals("thetime")) {
+                        // print current server time
                         Time now = new Time(new Date());
                         message = String.format("Current server time: %s", now.toString());
                         ChatUtils.writeInfo(sender, pluginName, message);
                     } else if (args[0].equals("activetimers")) {
+                        // print active timer count
                         message = String.format("Number of active timers: %d", TimerControl.getActiveTimerCount());
                         ChatUtils.writeInfo(sender, pluginName, message);
                     } else {
-                        ChatUtils.writeError(sender, pluginName, "Argument must be an Integer");
+                        // unknown command
+                        ChatUtils.writeError(sender, pluginName, "Unknown argument or argument is not a number");
                     }
                     return false;
                 }
             }
         } else if (args.length == 0) {
+            // no argument passed
             ChatUtils.writeInfo(sender, pluginName, "Nächster Restart ist angesetzt für " + TimerControl.showNextRestartTime());
             return true;
         } else {
+            // more than one argument passed
             ChatUtils.writeError(sender, pluginName, "Ungültige Anzahl an Argumenten");
             return false;
         }
