@@ -63,6 +63,10 @@ public class TimerControl {
         return TimerControl.nextRestartTime;
     }
 
+    public static int getActiveTimerCount() {
+        return TimerControl.timers.size();
+    }
+
     private Time getNextRestartTime(List<Time> restartTimes) {
         // read current time but remove everything
         // but hours and minutes for compare

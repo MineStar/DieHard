@@ -1,5 +1,7 @@
 package de.minestar.diehard.commands;
 
+import java.util.Date;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -46,12 +48,13 @@ public class cmdRestart extends AbstractExtendedCommand {
 
     private boolean restart(CommandSender sender, String[] args) {
         int minutesUntilRestart;
+        String message;
         if (args.length == 1) {
             if (args[0].contains(":")) {
                 Time restartTime = new Time(args[0]);
                 if (restartTime.compareTo(new Time()) >= 0) {
                     DieHardCore.restartCheckThreadWithTimeAsHHmm(restartTime);
-                    String message = String.format("Server Neustart um %s", args[0]);
+                    message = String.format("Server Neustart um %s", args[0]);
                     ChatUtils.writeInfo(sender, pluginName, message);
                     return true;
                 } else {
@@ -68,11 +71,20 @@ public class cmdRestart extends AbstractExtendedCommand {
                 try {
                     minutesUntilRestart = Integer.valueOf(args[0]);
                     DieHardCore.restartCheckThreadWithTimeInMinutes(minutesUntilRestart);
-                    String message = String.format("Server Neustart in %d %s", minutesUntilRestart, minutesUntilRestart == 1 ? "Minute" : "Minuten");
+                    message = String.format("Server Neustart in %d %s", minutesUntilRestart, minutesUntilRestart == 1 ? "Minute" : "Minuten");
                     ChatUtils.writeInfo(sender, pluginName, message);
                     return true;
                 } catch (Exception e) {
-                    ChatUtils.writeError(sender, pluginName, "Argument must be an Integer");
+                    if (args[0].equals("thetime")) {
+                        Time now = new Time(new Date());
+                        message = String.format("Current server time: %s", now.toString());
+                        ChatUtils.writeInfo(sender, pluginName, message);
+                    } else if (args[0].equals("activetimers")) {
+                        message = String.format("Number of active timers: %d", TimerControl.getActiveTimerCount());
+                        ChatUtils.writeInfo(sender, pluginName, message);
+                    } else {
+                        ChatUtils.writeError(sender, pluginName, "Argument must be an Integer");
+                    }
                     return false;
                 }
             }
