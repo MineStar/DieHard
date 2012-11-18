@@ -3,32 +3,30 @@ package de.minestar.diehard.timers;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
-import java.util.concurrent.TimeUnit;
 
 import de.minestar.diehard.core.DieHardCore;
 import de.minestar.diehard.core.Settings;
 import de.minestar.diehard.core.Time;
-import de.minestar.diehard.timers.WarningTimer;
+import de.minestar.diehard.enums.TimerType;
 import de.minestar.minestarlibrary.utils.ConsoleUtils;
 
 public class TimerControl {
-    private static List<Timer> timers = new ArrayList<Timer>();
+    private static List<ExecutionTimerAndTaskInfo> timerInfo = new ArrayList<ExecutionTimerAndTaskInfo>();
     private static String nextRestartTime;
-    private static int minutesUntilRestart;
+    private static int minutesUntilExecution;
 
     public void cancelTimers() {
-        for (Timer timer : TimerControl.timers) {
-            timer.cancel();
+        for (ExecutionTimerAndTaskInfo info : TimerControl.timerInfo) {
+            info.getTimer().cancel();
         }
-        TimerControl.timers.clear();
+        TimerControl.timerInfo.clear();
     }
 
     public TimerControl(int minutes) {
         // init Timers for restart in given minutes
-        TimerControl.minutesUntilRestart = minutes;
+        TimerControl.minutesUntilExecution = minutes;
         Time now = new Time(new Date());
-        TimerControl.nextRestartTime = now.add(new Time(TimerControl.minutesUntilRestart)).toString();
+        TimerControl.nextRestartTime = now.add(new Time(TimerControl.minutesUntilExecution)).toString();
         ConsoleUtils.printInfo(DieHardCore.NAME, "Restart Zeit geaendert auf: " + TimerControl.nextRestartTime);
         startTimers();
     }
@@ -37,28 +35,33 @@ public class TimerControl {
         // init Timers from given settings value
         Time nextRestartTime = getNextRestartTime(restartTimes);
         Time now = new Time(new Date());
-        TimerControl.minutesUntilRestart = now.difference(nextRestartTime).toMinutes();
-        TimerControl.nextRestartTime = now.add(new Time(TimerControl.minutesUntilRestart)).toString();
+        TimerControl.minutesUntilExecution = now.difference(nextRestartTime).toMinutes();
+        TimerControl.nextRestartTime = now.add(new Time(TimerControl.minutesUntilExecution)).toString();
 
         this.startTimers();
     }
 
     private void startTimers() {
         // start restart Timer
-        Timer restartTimer = new Timer();
-        restartTimer.schedule(new RestartTimer(), TimeUnit.MINUTES.toMillis(TimerControl.minutesUntilRestart), TimeUnit.SECONDS.toMillis(Settings.getLastWarning()));
-        TimerControl.timers.add(restartTimer);
+        ExecutionTimerAndTaskInfo execTimerAndTaskInfo;
+
+        execTimerAndTaskInfo = new ExecutionTimerAndTaskInfo(TimerType.RestartTimer, "Restart", TimerControl.minutesUntilExecution);
+        TimerControl.timerInfo.add(execTimerAndTaskInfo);
+
+        execTimerAndTaskInfo = new ExecutionTimerAndTaskInfo(TimerType.WarningTimer, "LastWarning", TimerControl.minutesUntilExecution, "Yippie-Ya-Yeah Schweinebacke!");
+        TimerControl.timerInfo.add(execTimerAndTaskInfo);
 
         // start all warning timers
         for (Time warnTime : Settings.getWarningTimes()) {
             int warnTimeMinutes = warnTime.toMinutes();
-            if ((warnTimeMinutes > 0) && (warnTimeMinutes <= TimerControl.minutesUntilRestart)) {
-                Timer warningTimer = new Timer();
+            if ((warnTimeMinutes > 0) && (warnTimeMinutes <= TimerControl.minutesUntilExecution)) {
                 // Warn Time Verzögerung in Abhängigkeit von restart Zeit
                 // festlegen
-                int difference = TimerControl.minutesUntilRestart - warnTimeMinutes;
-                warningTimer.schedule(new WarningTimer(warnTimeMinutes), TimeUnit.MINUTES.toMillis(difference));
-                TimerControl.timers.add(warningTimer);
+                int difference = TimerControl.minutesUntilExecution - warnTimeMinutes;
+                String message = String.format("ACHTUNG !!! Der Server wird in %d Minute%s neu gestartet!", warnTimeMinutes, warnTimeMinutes > 1 ? "n" : "");
+                String timerName = String.format("%d minutes left", warnTimeMinutes);
+                execTimerAndTaskInfo = new ExecutionTimerAndTaskInfo(TimerType.WarningTimer, timerName, difference, message);
+                TimerControl.timerInfo.add(execTimerAndTaskInfo);
             }
         }
     }
@@ -67,8 +70,12 @@ public class TimerControl {
         return TimerControl.nextRestartTime;
     }
 
-    public static int getActiveTimerCount() {
-        return TimerControl.timers.size();
+    public static String getActiveTimerInfo() {
+        String result = "Information about active timers\n";
+        for (ExecutionTimerAndTaskInfo info : TimerControl.timerInfo) {
+            result += String.format("%s\n", info.getTask().toString());
+        }
+        return result;
     }
 
     private Time getNextRestartTime(List<Time> restartTimes) {

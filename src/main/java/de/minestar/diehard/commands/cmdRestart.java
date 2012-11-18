@@ -88,7 +88,7 @@ public class cmdRestart extends AbstractExtendedCommand {
                         ChatUtils.writeInfo(sender, pluginName, message);
                     } else if (args[0].equals("activetimers")) {
                         // print active timer count
-                        message = String.format("Number of active timers: %d", TimerControl.getActiveTimerCount());
+                        message = TimerControl.getActiveTimerInfo();
                         ChatUtils.writeInfo(sender, pluginName, message);
                     } else {
                         // unknown command
