@@ -35,7 +35,7 @@ public class ExecutionTimerTask extends TimerTask {
             if (this.timerType == TimerType.RestartTimer) {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new ExecutionThread(timerType, message));
             } else {
-                Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new ExecutionThread(timerType, message));
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, new ExecutionThread(timerType, message));
             }
             this.cancel();
         }
