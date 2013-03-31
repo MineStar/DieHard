@@ -15,10 +15,10 @@ public class ExecutionTimerAndTaskInfo {
         this.task = new ExecutionTimerTask(type, name, minutes);
         this.scheduleTimer();
     }
-    
+
     public ExecutionTimerAndTaskInfo(TimerType type, String name, int minutes, String message) {
         this.timer = new Timer();
-        this.task = new ExecutionTimerTask(type,  name, minutes, message);
+        this.task = new ExecutionTimerTask(type, name, minutes, message);
         this.scheduleTimer();
     }
 
@@ -29,7 +29,7 @@ public class ExecutionTimerAndTaskInfo {
     public ExecutionTimerTask getTask() {
         return this.task;
     }
-    
+
     private void scheduleTimer() {
         long startDelay;
         if (task.getType() == TimerType.WarningTimer) {
