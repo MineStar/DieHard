@@ -3,6 +3,6 @@ main: de.minestar.diehard.core.DieHardCore
 version: ${pom.version}
 depend: [MineStarLibrary]
 commands:
-  restart:
+  neustart:
     description: Restart the server
-    usage: /restart <Time in minutes>
+    usage: /neustart <Time in minutes>

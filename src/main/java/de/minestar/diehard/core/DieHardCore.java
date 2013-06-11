@@ -4,7 +4,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
+
 import de.minestar.diehard.commands.cmdRestart;
+import de.minestar.diehard.threads.SaveAllThread;
 import de.minestar.diehard.timers.TimerControl;
 import de.minestar.minestarlibrary.AbstractCore;
 import de.minestar.minestarlibrary.commands.CommandList;
@@ -28,7 +31,7 @@ public class DieHardCore extends AbstractCore {
         //@formatter:off
         cmdList = new CommandList(NAME,
                 // RESTART COMMAND
-                new cmdRestart("/restart", "", "")
+                new cmdRestart("/neustart", "", "")
             );
             //@formatter:on
         return true;
@@ -38,6 +41,7 @@ public class DieHardCore extends AbstractCore {
     protected boolean commonEnable() {
         // create TimerControl which creates all necessary timers
         timerControl = new TimerControl(Settings.getRestartTimes(), Settings.getWarningTimes());
+        Bukkit.getScheduler().runTaskTimer(this, new SaveAllThread(), 20 * 60 * 10, 20 * 60 * 10);
         return true;
     }
 
