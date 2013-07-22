@@ -41,7 +41,7 @@ public class DieHardCore extends AbstractCore {
     protected boolean commonEnable() {
         // create TimerControl which creates all necessary timers
         timerControl = new TimerControl(Settings.getRestartTimes(), Settings.getWarningTimes());
-        Bukkit.getScheduler().runTaskTimer(this, new SaveAllThread(), 20 * 60 * 10, 20 * 60 * 10);
+//        Bukkit.getScheduler().runTaskTimer(this, new SaveAllThread(), 20 * 60 * 10, 20 * 60 * 10);
         return true;
     }
 

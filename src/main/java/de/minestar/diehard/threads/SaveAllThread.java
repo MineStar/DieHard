@@ -18,7 +18,7 @@ public class SaveAllThread implements Runnable {
         for (World world : worldList) {
             world.save();
         }
-        Bukkit.broadcastMessage(ChatColor.AQUA + "[" + DieHardCore.NAME + "] " + ChatColor.DARK_GREEN + "Saving playerdata and worlds...");
+        Bukkit.broadcastMessage(ChatColor.AQUA + "[" + DieHardCore.NAME + "] " + ChatColor.DARK_GREEN + "Done!");
     }
 
 }
