@@ -1,22 +1,40 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>DieHard</artifactId>
-  <distributionManagement>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>de.minestar</groupId>
+	<artifactId>DieHard</artifactId>
+	<version>1.6.2-R1-SNAPSHOT</version>
+	<distributionManagement>
 		<!-- use the following if you're not using a snapshot version. -->
 		<repository>
-			<id>nexus</id>
-			<name>RepositoryProxy</name>
+			<id>minestarDeployment</id>
+			<name>Internal Releases</name>
 			<url>http://server2.minestar.de:8081/nexus/content/repositories/releases</url>
 		</repository>
 		<!-- use the following if you ARE using a snapshot version. -->
 		<snapshotRepository>
-			<id>nexus</id>
-			<name>RepositoryProxy</name>
+			<id>minestarDeployment</id>
+			<name>Internal Releases</name>
 			<url>http://server2.minestar.de:8081/nexus/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
+
+	<repositories>
+		<repository>
+			<id>MinestarNexus</id>
+			<url>http://server2.minestar.de:8081/nexus/content/groups/public/</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>de.minestar</groupId>
+			<artifactId>MineStarLibrary</artifactId>
+			<version>1.6.2_R1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+
 	<build>
-		<sourceDirectory>src</sourceDirectory>
 		<resources>
 			<resource>
 				<directory>src/main/resources/</directory>
@@ -24,14 +42,6 @@
 			</resource>
 		</resources>
 		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -59,18 +69,4 @@
 			</plugin>
 		</plugins>
 	</build>
-  <dependencies>
-  	<dependency>
-  		<groupId>de.minestar</groupId>
-  		<artifactId>MineStarLibrary</artifactId>
-  		<version>1.6.2_R1-SNAPSHOT</version>
-  	</dependency>
-  </dependencies>
-  <parent>
-  	<groupId>de.minestar</groupId>
-  	<artifactId>MinestarPlugins</artifactId>
-  	<version>1.5.1_R2</version>
-  	<relativePath>../MinestarPlugins</relativePath>
-  </parent>
-  <version>1.6.2-R1-SNAPSHOT</version>
 </project>
